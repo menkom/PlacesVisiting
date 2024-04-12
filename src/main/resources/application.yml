@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: places-visiting-app
+  profiles:
+    default: dev
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql:///postgres}
+    username: ${DATASOURCE_USER:user}
+    password: ${DATASOURCE_PASSWORD:password}
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
