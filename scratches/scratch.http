@@ -3,13 +3,45 @@
 POST http://127.0.0.1:8080/account/login
 
 > {%
-  client.test("Request without body should be denied and return 403", function () {
-    client.assert(response.status === 403, "Response status is not 403");
+  client.test("Request without body should be denied and return 400", function () {
+    client.assert(response.status === 400, "Response status is not 400");
   });
 %}
 
 ###
-# @name Login
+# @name Login with empty username
+POST http://127.0.0.1:8080/account/login
+Content-Type: application/json
+
+{
+  "username":"",
+  "password":"pass"
+ }
+
+> {%
+  client.test("Invalid username field", function () {
+    client.assert(response.status === 400, "Response status is not 400");
+  });
+%}
+
+###
+# @name Login with empty password
+POST http://127.0.0.1:8080/account/login
+Content-Type: application/json
+
+{
+  "username":"user",
+  "password":""
+ }
+
+> {%
+  client.test("Invalid password field", function () {
+    client.assert(response.status === 400, "Response status is not 400");
+  });
+%}
+
+###
+# @name Login before user creation
 POST http://127.0.0.1:8080/account/login
 Content-Type: application/json
 
@@ -17,3 +49,35 @@ Content-Type: application/json
   "username":"user",
   "password":"pass"
  }
+
+> {%
+  client.test("No users exists", function () {
+    client.assert(response.status === 403, "Response status is not 403");
+  });
+%}
+
+###
+# @name Create new account
+POST http://127.0.0.1:8080/account/create
+Content-Type: application/json
+
+{
+  "username":"user",
+  "password":"pass"
+ }
+
+###
+# @name Login with existing user
+POST http://127.0.0.1:8080/account/login
+Content-Type: application/json
+
+{
+  "username":"user",
+  "password":"pass"
+}
+
+> {%
+  client.test("User login successfully", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
