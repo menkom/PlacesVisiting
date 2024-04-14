@@ -1,7 +1,16 @@
 package info.mastera.placesVisiting.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
 
 /**
  * JwtService it implements useful functions:
@@ -13,10 +22,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
+    private static final String ISSUER = "info.mastera";
+    private static final TemporalAmount TOKEN_VALIDITY = Duration.ofMinutes(600L);
+
+    private final String sharedKey;
+
+    public JwtService(@Value("${jwt.shared-key}") String sharedKey) {
+        this.sharedKey = sharedKey;
+    }
+
     /**
      * Generates token for granted user and password
      */
     public String createToken(Authentication authentication) {
-        return "";
+        Date now = new Date(System.currentTimeMillis());
+        return Jwts.builder()
+                .subject(authentication.getName())
+                .issuer(ISSUER)
+                .issuedAt(now)
+                .expiration(Date.from(now.toInstant().plus(TOKEN_VALIDITY)))
+                .signWith(getSigningKey())
+// According to JWS Compact Serialization compaction of the JWT to a URL-safe string
+                .compact();
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(sharedKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

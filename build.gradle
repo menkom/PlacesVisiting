@@ -12,6 +12,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+ext {
+    jjwtVersion = '0.12.5'
+    logbackEncoderVersion = '7.4'
+    assertjVersion = '3.25.3'
+}
+
 repositories {
     mavenCentral()
 }
@@ -25,9 +31,15 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+
+
+    implementation "io.jsonwebtoken:jjwt-api:$jjwtVersion"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$jjwtVersion"
 
     //logging
-    runtimeOnly 'net.logstash.logback:logstash-logback-encoder:7.4'
+    runtimeOnly "net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion"
 }
 
 test {
