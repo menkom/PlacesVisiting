@@ -1,3 +1,11 @@
+# Spring Boot Actuator settings
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: info,health
 spring:
   application:
     name: places-visiting-app
@@ -11,3 +19,8 @@ spring:
     banner-mode: off
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto:
+logging:
+  level:
+    root: INFO

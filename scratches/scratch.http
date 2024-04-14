@@ -1,0 +1,19 @@
+###
+# @name Login without body
+POST http://127.0.0.1:8080/account/login
+
+> {%
+  client.test("Request without body should be denied and return 403", function () {
+    client.assert(response.status === 403, "Response status is not 403");
+  });
+%}
+
+###
+# @name Login
+POST http://127.0.0.1:8080/account/login
+Content-Type: application/json
+
+{
+  "username":"user",
+  "password":"pass"
+ }
