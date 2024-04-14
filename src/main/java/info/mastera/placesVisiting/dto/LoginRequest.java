@@ -1,4 +1,6 @@
 package info.mastera.placesVisiting.dto;
 
-public record LoginRequest(String username, String password) {
+import jakarta.validation.constraints.NotEmpty;
+
+public record LoginRequest(@NotEmpty String username, @NotEmpty String password) {
 }
