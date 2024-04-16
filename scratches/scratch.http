@@ -14,9 +14,9 @@ POST http://127.0.0.1:8080/account/login
 Content-Type: application/json
 
 {
-  "username":"",
-  "password":"pass"
- }
+  "username": "",
+  "password": "pass"
+}
 
 > {%
   client.test("Invalid username field", function () {
@@ -30,9 +30,9 @@ POST http://127.0.0.1:8080/account/login
 Content-Type: application/json
 
 {
-  "username":"user",
-  "password":""
- }
+  "username": "user",
+  "password": ""
+}
 
 > {%
   client.test("Invalid password field", function () {
@@ -46,9 +46,9 @@ POST http://127.0.0.1:8080/account/login
 Content-Type: application/json
 
 {
-  "username":"user",
-  "password":"pass"
- }
+  "username": "user",
+  "password": "pass"
+}
 
 > {%
   client.test("No users exists", function () {
@@ -62,9 +62,9 @@ POST http://127.0.0.1:8080/account/create
 Content-Type: application/json
 
 {
-  "username":"user",
-  "password":"pass"
- }
+  "username": "user",
+  "password": "pass"
+}
 
 ###
 # @name Login with existing user
@@ -72,12 +72,41 @@ POST http://127.0.0.1:8080/account/login
 Content-Type: application/json
 
 {
-  "username":"user",
-  "password":"pass"
+  "username": "user",
+  "password": "pass"
 }
 
 > {%
+  client.global.set("auth-bearer-token", null);
   client.test("User login successfully", function () {
     client.assert(response.status === 200, "Response status is not 200");
+    const token = response.body;
+    client.global.set("auth-bearer-token", token);
+  });
+%}
+
+
+###
+# @name Test unauthenticated
+GET http://127.0.0.1:8080/test
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 403, "Response status is not 403");
+  });
+%}
+
+
+###
+# @name Test authenticated
+GET http://127.0.0.1:8080/test
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Authorized request", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body === 'You are authenticated', "Unexpected response body");
   });
 %}
