@@ -1,13 +1,15 @@
 package info.mastera.placesVisiting.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
@@ -46,8 +48,31 @@ public class JwtService {
                 .compact();
     }
 
-    private Key getSigningKey() {
+    private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(sharedKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public boolean isValid(String jwt, UserDetails userDetails) {
+        final String userName = getUsername(jwt);
+        return (userName.equals(userDetails.getUsername())) && !isExpired(jwt);
+    }
+
+    public String getUsername(String jwt) {
+        return getClaims(jwt).getSubject();
+    }
+
+    private Claims getClaims(String jwt) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload();
+    }
+
+    private boolean isExpired(String jwt) {
+        return getClaims(jwt)
+                .getExpiration()
+                .before(new Date(System.currentTimeMillis()));
     }
 }
