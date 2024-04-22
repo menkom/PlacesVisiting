@@ -92,7 +92,7 @@ GET http://127.0.0.1:8080/test
 
 > {%
   client.test("Unauthorized request", function () {
-    client.assert(response.status === 403, "Response status is not 403");
+    client.assert(response.status === 401, "Response status is not 401");
   });
 %}
 
@@ -108,5 +108,34 @@ Authorization: Bearer {{auth-bearer-token}}
   });
   client.test("Received expected response", function () {
     client.assert(response.body === 'You are authenticated', "Unexpected response body");
+  });
+%}
+
+
+###
+# @name Get current principal info
+GET http://127.0.0.1:8080/principal
+Authorization: Bearer {{auth-bearer-token}}
+
+
+###
+# @name Logout current user
+GET http://127.0.0.1:8080/logout
+
+> {%
+  client.test("User logout successfully", function () {
+    client.assert(response.status === 204, "Response status is not 204");
+    client.global.set("auth-bearer-token", null);
+  });
+%}
+
+
+###
+# @name Attempt to get principal info but not authenticated (should be no session data)
+GET http://127.0.0.1:8080/principal
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 401, "Response status is not 401");
   });
 %}
