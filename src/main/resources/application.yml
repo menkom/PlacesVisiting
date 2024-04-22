@@ -21,6 +21,20 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+              - address
+              - phone
+
 logging:
   level:
     root: INFO
