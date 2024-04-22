@@ -1,6 +1,7 @@
 package info.mastera.placesVisiting.service;
 
 import info.mastera.placesVisiting.model.Account;
+import info.mastera.placesVisiting.model.Provider;
 import info.mastera.placesVisiting.repository.AccountRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,13 +35,15 @@ public class AccountService {
     }
 
     public boolean create(String username, String password) {
-        if (accountRepository.findByUsername(username).isPresent()) {
+        if (accountRepository.findByUsernameAndProvider(username, Provider.BASIC).isPresent()) {
             throw new BadCredentialsException("Username is already in use");
         }
         accountRepository.save(
                 new Account()
                         .setUsername(username)
-                        .setPassword(passwordEncoder.encode(password)));
+                        .setPassword(passwordEncoder.encode(password))
+                        .setProvider(Provider.BASIC)
+        );
         return true;
     }
 }

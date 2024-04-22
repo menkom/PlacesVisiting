@@ -1,5 +1,6 @@
 package info.mastera.placesVisiting.service;
 
+import info.mastera.placesVisiting.model.Provider;
 import info.mastera.placesVisiting.repository.AccountRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
@@ -25,7 +26,7 @@ public class UserService implements UserDetailsService {
         if (null == username || username.isEmpty()) {
             throw new BadCredentialsException("Username can't be empty");
         }
-        return accountRepository.findByUsername(username)
+        return accountRepository.findByUsernameAndProvider(username, Provider.BASIC)
                 .map(account -> new User(account.getUsername(), account.getPassword(), new ArrayList<>()))
                 .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("Username {0} not found.", username)));
     }
