@@ -17,5 +17,84 @@
    * Добавление пуш-уведомлений для различных уведомлений.
    * Отправка уведомлений о планируемых поездках.
 4. Асинхронная обработка:
-   * Добавление асинхронной обработки для выполнения задач, которые могут занимать продолжительное время.
+   * Добавление асинхронной обработки для выполнения **задач**, которые могут занимать продолжительное время. (Какие это могут быть задачи? Может стоит это обдумывать, когда будет конкретная задача, а не пытаться объять необъятное?)
+
+### Questions
+1. Работа с пользователями. У нас предполагается наличие обычно зарегистрированных пользователи и авторизованных через Google. 
+
+   Q1: Пользователь mike@gmail.com, вошедший через Google и ранее зарегистрированный пользователь mike@gmail.com  это один и тот же?
+ 
+2. >Предоставление возможности совместных поездок с **другими пользователями**.
+
+   Q1: Это предоставление возможности редактировать поезку или это просто список друзей?
+3. >Возможность удалить **планируемую** поездку.
+
+   Q1: Только планируемую можно удалять?
+4. >Возможность поделиться своей **картой** **с друзьями**.
+
+   Q1: Что значит КАРТА? Это список или реально карта maps.google.com?
+
+   Q2: Что имеется в виду под словом "друзья"? Это те, кто едут со мной или просто ссылка кому-либо? 
+
+   Q3: Что значит поделиться? Поделиться возможностью редактироваться или просто просмотреть запланированные места?
+5. >Хранение информации о посещенных **местах**.
+ 
+   Q1: Что мы подразумеваем под словом "место"? Это должны быть чёткие координаты или мы можем ограничиться словесным названием?
+6. >Вывод **нескольких** фотографий мест (посещенных или которые еще будут посещены).
+
+   Q1: Как должен формироваться этот список? Просто рандомно?
+7. >Добавление планируемых поездок в гугл календарь (отправка писем на почту при **нескольких** участниках). 
+
+   Q1: Если только один участник, то нельзя отправлять?
+   Q2. Список берём из перечисленных в поездке или этот список именно для рассылки?
+8. >Отправка уведомлений о **планируемых** поездках.
+
+   Q1: Предполагается это будет использоваться на фронте и какая-то всплывашка?
+   Q2: Уведомление за какое время должно приходить?
+9. >Добавление асинхронной обработки для выполнения **задач**, которые могут занимать продолжительное время.
+
+   Q1: Какие это могут быть задачи?
+   Q2: Может стоит это обдумывать, когда будет конкретная задача, а не пытаться объять необъятное?
+
+### Project entities:
+* Account (User)
+* Trip
+* Place
+* Picture
+
+### Expected endpoints according to task description:
+- Account
+  * register new user (account)
+- Trip
+  * register trip (expected or past)
+  * add other travellers (users) to your trip
+  * edit trip data
+       + travellers list
+       + date
+  * delete expected trip
+  * share trip map with friends
+  * add trip to Google Calendar (send email to several travellers)
+- Place
+  * store information about visited places
+  * get list of visited places with filters (period, country, people)
+  * display photos of several places (visited or planned)
+
+### Additional features
+- Notifications
+  * Push messages
+  * Send push messages about planned trips
+- Asynchronous actions
+  * Add asynchronous processing for tasks that may take a long time
+
+### Steps of development:
+1. Create simple running Spring Boot application
+2. Create user model, repository and service for login
+3. Create config, service and controller for authentication
+4. Add some endpoints to test
+5. Implement JWT token generation and validation
+6. Add new user account creation and exception handling
+7. Create filter to validate user authentication using header token (JWT filter)
+8. Add JwtFilter in config
+9. Add OAuth Google authentication and let basic and OAuth work together
+
 
