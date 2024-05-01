@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+target/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -39,3 +40,5 @@ out/
 # java flight recorder
 *.jfr
 .profileconfig.json
+*.bkp
+*.log
