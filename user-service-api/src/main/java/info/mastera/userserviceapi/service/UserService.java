@@ -1,6 +1,5 @@
 package info.mastera.userserviceapi.service;
 
-import info.mastera.userserviceapi.model.Provider;
 import info.mastera.userserviceapi.repository.AccountRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
@@ -26,7 +25,7 @@ public class UserService implements UserDetailsService {
         if (null == username || username.isEmpty()) {
             throw new BadCredentialsException("Username can't be empty");
         }
-        return accountRepository.findByUsernameAndProvider(username, Provider.BASIC)
+        return accountRepository.findByUsername(username)
                 .map(account -> new User(account.getUsername(), account.getPassword(), new ArrayList<>()))
                 .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("Username {0} not found.", username)));
     }

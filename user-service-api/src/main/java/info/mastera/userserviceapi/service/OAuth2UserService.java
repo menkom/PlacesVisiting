@@ -1,8 +1,6 @@
 package info.mastera.userserviceapi.service;
 
-import info.mastera.userserviceapi.dto.UserDto;
 import info.mastera.userserviceapi.model.Account;
-import info.mastera.userserviceapi.model.Provider;
 import info.mastera.userserviceapi.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,27 +32,19 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2User oAuth2User) {
-        UserDto user = new UserDto(oAuth2User.getAttribute("email"), Provider.GOOGLE);
+        String userIdentifier = oAuth2User.getAttribute("email");
 
-        if (user.username() == null || user.username().isEmpty()) {
+        if (userIdentifier == null || userIdentifier.isEmpty()) {
             throw new IllegalArgumentException("Missing required attribute email");
         }
-        Account account = accountRepository.findByUsernameAndProvider(user.username(), user.provider())
-                .map(existingUser -> updateExistingUser(existingUser, user))
-                .orElseGet(() -> registerNewUser(user));
+        Account account = accountRepository.findByUsername(userIdentifier)
+                .orElseGet(() -> registerNewUser(userIdentifier));
         return formUser(account);
     }
 
-    private Account registerNewUser(UserDto userDto) {
-        Account user = new Account()
-                .setUsername(userDto.username())
-                .setProvider(userDto.provider());
+    private Account registerNewUser(String userIdentifier) {
+        Account user = new Account().setUsername(userIdentifier);
         return accountRepository.save(user);
-    }
-
-    private Account updateExistingUser(Account existingAccount, UserDto userInfoDto) {
-        existingAccount.setUsername(userInfoDto.username());
-        return accountRepository.save(existingAccount);
     }
 
     private OAuth2User formUser(Account account) {
