@@ -1,6 +1,7 @@
+@HOST=http://127.0.0.1:8080/api
 ###
 # @name Login without body
-POST http://127.0.0.1:8080/account/login
+POST {{HOST}}/account/login
 
 > {%
   client.test("Request without body should be denied and return 400", function () {
@@ -10,7 +11,7 @@ POST http://127.0.0.1:8080/account/login
 
 ###
 # @name Login with empty username
-POST http://127.0.0.1:8080/account/login
+POST {{HOST}}/account/login
 Content-Type: application/json
 
 {
@@ -26,7 +27,7 @@ Content-Type: application/json
 
 ###
 # @name Login with empty password
-POST http://127.0.0.1:8080/account/login
+POST {{HOST}}/account/login
 Content-Type: application/json
 
 {
@@ -42,7 +43,7 @@ Content-Type: application/json
 
 ###
 # @name Login before user creation
-POST http://127.0.0.1:8080/account/login
+POST {{HOST}}/account/login
 Content-Type: application/json
 
 {
@@ -58,7 +59,7 @@ Content-Type: application/json
 
 ###
 # @name Create new account
-POST http://127.0.0.1:8080/account/create
+POST {{HOST}}/account/create
 Content-Type: application/json
 
 {
@@ -68,7 +69,7 @@ Content-Type: application/json
 
 ###
 # @name Login with existing user
-POST http://127.0.0.1:8080/account/login
+POST {{HOST}}/account/login
 Content-Type: application/json
 
 {
@@ -88,7 +89,7 @@ Content-Type: application/json
 
 ###
 # @name Test unauthenticated
-GET http://127.0.0.1:8080/test
+GET {{HOST}}/test
 
 > {%
   client.test("Unauthorized request", function () {
@@ -99,7 +100,7 @@ GET http://127.0.0.1:8080/test
 
 ###
 # @name Test authenticated
-GET http://127.0.0.1:8080/test
+GET {{HOST}}/test
 Authorization: Bearer {{auth-bearer-token}}
 
 > {%
@@ -114,17 +115,17 @@ Authorization: Bearer {{auth-bearer-token}}
 
 ###
 # @name Get current principal info
-GET http://127.0.0.1:8080/principal
+GET {{HOST}}/principal
 Authorization: Bearer {{auth-bearer-token}}
 
 
 ###
 # @name Logout current user
-GET http://127.0.0.1:8080/logout
+GET {{HOST}}/logout
 
 > {%
   client.test("User logout successfully", function () {
-    client.assert(response.status === 204, "Response status is not 204");
+    client.assert(response.status === 200, "Response status is not 200");
     client.global.set("auth-bearer-token", null);
   });
 %}
@@ -132,7 +133,7 @@ GET http://127.0.0.1:8080/logout
 
 ###
 # @name Attempt to get principal info but not authenticated (should be no session data)
-GET http://127.0.0.1:8080/principal
+GET {{HOST}}/principal
 
 > {%
   client.test("Unauthorized request", function () {

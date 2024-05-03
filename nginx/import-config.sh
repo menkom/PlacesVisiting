@@ -1,0 +1,1 @@
+docker cp ./nginx.conf teora-nginx:/etc/nginx/

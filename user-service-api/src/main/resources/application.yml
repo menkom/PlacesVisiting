@@ -1,0 +1,44 @@
+# Spring Boot Actuator settings
+server:
+  servlet:
+    context-path: /api
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: info,health
+spring:
+  application:
+    name: user-service-api
+  profiles:
+    default: dev
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql:///user_places_visiting}
+    username: ${DATASOURCE_USER:user}
+    password: ${DATASOURCE_PASSWORD:password}
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+              - address
+              - phone
+logging:
+  level:
+    root: INFO
+jwt:
+  shared-key: ${JWT_SHARED_KEY:DEFAULT64CHARKEY5368566D5970337336763979244226452948404D63510000}
