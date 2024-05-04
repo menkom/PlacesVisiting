@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table( indexes = {
-        @Index(name = "uk_username_provider", columnList = "username, provider", unique = true),
+        @Index(name = "uk_username", columnList = "username", unique = true),
 })
 public class Account {
 
