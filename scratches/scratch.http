@@ -118,25 +118,57 @@ Authorization: Bearer {{auth-bearer-token}}
 GET {{HOST}}/principal
 Authorization: Bearer {{auth-bearer-token}}
 
+> {%
+  client.test("Authorized request", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    const sourceKeys = Object.keys(response.body);
+    client.assert(
+      sourceKeys.includes("password") && sourceKeys.includes("username"),
+      "Not enough of fields");
+  });
+%}
 
 ###
-# @name Logout current user
+# @name Logout current user and redirect to login page
+#@no-redirect
 GET {{HOST}}/logout
 
 > {%
   client.test("User logout successfully", function () {
-    client.assert(response.status === 200, "Response status is not 200");
+    client.assert(response.status === 302, "Response status is not 302");
     client.global.set("auth-bearer-token", null);
+    const location = response.headers.valueOf('Location');
+    client.assert(
+      location && location.endsWith("accout/login?logout"),
+      "No redirect location");
   });
 %}
 
-
 ###
 # @name Attempt to get principal info but not authenticated (should be no session data)
+#@no-redirect
 GET {{HOST}}/principal
 
 > {%
   client.test("Unauthorized request", function () {
     client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
+
+###
+# Login with Google. This endpoint redirects to Google and sets all necessary request params
+#@no-redirect
+GET {{HOST}}/oauth2/authorization/google
+
+> {%
+  client.test("Request is redirected to Google", function () {
+    client.assert(response.status === 302, "Response status is not 302");
+    const location = response.headers.valueOf('Location');
+    client.assert(
+      location && location.startsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id="),
+      "No redirect location");
   });
 %}

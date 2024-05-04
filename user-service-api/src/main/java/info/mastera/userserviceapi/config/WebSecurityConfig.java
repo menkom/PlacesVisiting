@@ -66,6 +66,10 @@ public class WebSecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(IF_REQUIRED))
                 .authenticationProvider(authenticationProvider(userService))
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(infoEndpoint -> infoEndpoint.userService(oAuth2UserService)))
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/accout/login")
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
@@ -76,6 +80,9 @@ public class WebSecurityConfig {
                         .backChannel(Customizer.withDefaults())
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                return 401 instead of redirecting to login page
+                .exceptionHandling(exceptionConfigurer ->
+                        exceptionConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint()))
                 .build();
     }
 }
