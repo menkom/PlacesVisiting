@@ -159,7 +159,7 @@ GET {{HOST}}/principal
 %}
 
 ###
-# Login with Google. This endpoint redirects to Google and sets all necessary request params
+# @name Login with Google. This endpoint redirects to Google and sets all necessary request params
 #@no-redirect
 GET {{HOST}}/oauth2/authorization/google
 
@@ -170,5 +170,148 @@ GET {{HOST}}/oauth2/authorization/google
     client.assert(
       location && location.startsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id="),
       "No redirect location");
+  });
+%}
+
+###
+# @name Create place without authentication. No need to have body
+POST {{HOST}}/places
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
+
+###
+# @name Login with existing user
+POST {{HOST}}/account/login
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "pass"
+}
+
+> {%
+  client.global.set("auth-bearer-token", null);
+  client.test("User login successfully", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+    const token = response.body;
+    client.global.set("auth-bearer-token", token);
+  });
+%}
+
+###
+# @name Create place.
+POST {{HOST}}/places
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "name": "PlaceName",
+  "country": "Poland",
+  "address": "rondo ONZ"
+}
+
+> {%
+  client.test("Place created", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    const sourceKeys = Object.keys(response.body);
+    client.assert(
+      sourceKeys.includes("id") && sourceKeys.includes("name"),
+      "Not enough of fields");
+  });
+%}
+
+###
+# @name Get existing place
+GET {{HOST}}/places/1
+#Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Place exists", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    const sourceKeys = Object.keys(response.body);
+    client.assert(
+      sourceKeys.includes("id") && sourceKeys.includes("name"),
+      "Not enough of fields");
+  });
+%}
+
+###
+# @name Get unexisting place
+GET {{HOST}}/places/1000
+#Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("PLace doesn't exists", function () {
+    client.assert(response.status === 404, "Response status is not 404");
+  });
+%}
+
+###
+# @name Rename of unexisting place
+PATCH {{HOST}}/places/1000
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "name": "Any"
+}
+
+> {%
+  client.test("PLace doesn't exists", function () {
+    client.assert(response.status === 404, "Response status is not 404");
+  });
+%}
+
+###
+# @name Place rename
+PATCH {{HOST}}/places/1
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "name": "Roundabout ONZ in Warsaw"
+}
+
+> {%
+  client.test("Place updated", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    client.assert(response.body.name === "Roundabout ONZ in Warsaw", "Name was updated");
+  });
+%}
+
+###
+# @name Add position to place
+PATCH {{HOST}}/places/1
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "latitude": 52.233215,
+  "longitude": 20.998458
+}
+
+> {%
+  client.test("Place updated", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    client.assert(response.body.latitude === 52.233215, "Latitude was updated");
+    client.assert(response.body.longitude === 20.998458, "Longitude was updated");
   });
 %}

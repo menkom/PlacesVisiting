@@ -16,6 +16,7 @@ ext {
     jjwtVersion = '0.12.5'
     logbackEncoderVersion = '7.4'
     assertjVersion = '3.25.3'
+    mapstructVersion = '1.5.5.Final'
 }
 
 configurations {
@@ -35,6 +36,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
