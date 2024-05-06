@@ -5,16 +5,11 @@ import info.mastera.userserviceapi.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/account")
@@ -47,20 +42,5 @@ public class AccountController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<String> handleMethodAgrumentException(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ":" + error.getDefaultMessage())
-                .collect(Collectors.joining("; "));
-        return ResponseEntity.badRequest().body("Not valid value in fields:[" + message + "]");
-    }
-
-    @ExceptionHandler({HttpMessageNotReadableException.class})
-    public ResponseEntity<String> handleHttpMessageNotReadableException() {
-        return ResponseEntity.badRequest().body("Required request body is missing or invalid");
     }
 }

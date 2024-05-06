@@ -4,10 +4,7 @@ import info.mastera.userserviceapi.dto.PlaceCreateRequest;
 import info.mastera.userserviceapi.dto.PlacePatchRequest;
 import info.mastera.userserviceapi.dto.PlaceResponse;
 import info.mastera.userserviceapi.service.PlaceService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,15 +36,5 @@ public class PlaceController {
     @PatchMapping("/{id}")
     public PlaceResponse update(@PathVariable Long id, @RequestBody @Valid PlacePatchRequest request) throws IllegalAccessException {
         return placeService.update(id, request);
-    }
-
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<String> handleEntityNotFoundException() {
-        return ResponseEntity.notFound().build();
-    }
-
-    @ExceptionHandler({IllegalAccessException.class})
-    public ResponseEntity<String> handleIllegalAccessException() {
-        return ResponseEntity.badRequest().body("Can't map new value to existing");
     }
 }

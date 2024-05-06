@@ -1,6 +1,7 @@
 package info.mastera.userserviceapi.filter;
 
 import info.mastera.userserviceapi.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -58,6 +59,9 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT string: {}. {}", jwt, e.getMessage());
+        }
+        catch (ExpiredJwtException e) {
+            logger.warn("Session expired. Login required. {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

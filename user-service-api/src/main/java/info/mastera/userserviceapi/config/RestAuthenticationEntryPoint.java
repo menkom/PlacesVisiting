@@ -21,6 +21,6 @@ public final class RestAuthenticationEntryPoint implements AuthenticationEntryPo
             final AuthenticationException authException) throws IOException {
 
         //401 is sent without the WWW-Authenticate header
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
