@@ -1,5 +1,7 @@
 package info.mastera.userserviceapi.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import info.mastera.userserviceapi.dto.ExceptionResponse;
 import info.mastera.userserviceapi.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -7,8 +9,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,17 +28,17 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
-
     private final static String HEADER_NAME = "authorization";
     public static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
-    public JwtFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtFilter(JwtService jwtService, UserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -57,11 +59,9 @@ public class JwtFilter extends OncePerRequestFilter {
                     updateContext(request, userDetails);
                 }
             }
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT string: {}. {}", jwt, e.getMessage());
-        }
-        catch (ExpiredJwtException e) {
-            logger.warn("Session expired. Login required. {}", e.getMessage());
+        } catch (MalformedJwtException | ExpiredJwtException e) {
+            handleException(response, e.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }
@@ -79,5 +79,14 @@ public class JwtFilter extends OncePerRequestFilter {
             return authHeader.replace(BEARER_PREFIX, "");
         }
         return null;
+    }
+
+    private void handleException(HttpServletResponse response, String errorMessage)
+            throws IOException {
+        final ExceptionResponse errorResponseDto = new ExceptionResponse(errorMessage);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponseDto));
     }
 }
