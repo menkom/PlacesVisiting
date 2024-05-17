@@ -315,3 +315,41 @@ Authorization: Bearer {{auth-bearer-token}}
     client.assert(response.body.longitude === 20.998458, "Longitude was updated");
   });
 %}
+
+###
+# @name Create trip
+POST {{HOST}}/trips
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "date": "01/02/2025",
+  "placeId": 1,
+  "companions": ["mike@gmail.com"]
+}
+
+###
+# @name Create another trip
+POST {{HOST}}/trips
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "date": "01/12/2024",
+  "placeId": 2
+}
+
+###
+# @name Create new trip with new place
+POST {{HOST}}/trips
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+{
+  "date": "01/12/2024",
+  "place": {
+    "name": "rondo Daszyńskiego",
+    "country": "Poland",
+    "address": "rondo Daszyńskiego"
+  }
+}

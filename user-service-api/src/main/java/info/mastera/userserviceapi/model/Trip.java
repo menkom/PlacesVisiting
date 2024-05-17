@@ -26,7 +26,7 @@ public class Trip {
     private String publicId;
 
     @ManyToOne
-    @JoinColumn(name = "place_id", nullable = false, foreignKey = @ForeignKey(name = "fk_place_trip"))
+    @JoinColumn(name = "place_id", foreignKey = @ForeignKey(name = "fk_place_trip"))
     private Place place;
 
     @JdbcTypeCode(SqlTypes.JSON)
