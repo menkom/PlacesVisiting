@@ -28,6 +28,25 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq3-management
+    hostname: rabbitmq                        # hostname will be used by RabbitMQ to name the server instance.
+    restart: on-failure
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      #  disk_free_limit=Disk space - low watermark
+      #  log_levels=logging level for different operations
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 102483648
+    ports:
+      - "5672:5672"
+      - '15672:15672' # management
+    #      - '61613:61613' # stomp
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
   places-visiting-api:
     container_name: places-visiting-api
     build:
@@ -48,3 +67,4 @@ services:
 
 volumes:
   pv-postgres:
+  rabbitmq:
