@@ -30,6 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final static String HEADER_NAME = "authorization";
     public static final String BEARER_PREFIX = "Bearer ";
+    private final static String INVALID_TOKEN_MESSAGE = "Invalid token";
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -46,21 +47,33 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwt(request);
-        if (jwt == null || jwt.isEmpty() || jwt.split("\\.").length < 2) {
+        if (jwt == null || jwt.isEmpty()) {
             filterChain.doFilter(request, response);
+            return;
+        }
+        if (jwt.split("\\.").length < 2) {
+            handleException(response, INVALID_TOKEN_MESSAGE);
             return;
         }
         try {
             var username = jwtService.getUsername(jwt);
-            if (username != null && !username.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                if (jwtService.isValid(jwt, userDetails)) {
-                    updateContext(request, userDetails);
-                }
+            if (username == null || username.isEmpty()) {
+                handleException(response, INVALID_TOKEN_MESSAGE);
+                return;
             }
-        } catch (MalformedJwtException | ExpiredJwtException e) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (jwtService.isValid(jwt, userDetails)) {
+                updateContext(request, userDetails);
+            } else {
+                handleException(response, INVALID_TOKEN_MESSAGE);
+                return;
+            }
+        } catch (MalformedJwtException e) {
             handleException(response, e.getMessage());
+            return;
+        } catch (ExpiredJwtException e) {
+            handleException(response, "Token expired. Re-login needed.");
             return;
         }
         filterChain.doFilter(request, response);

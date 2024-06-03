@@ -2,8 +2,11 @@ package info.mastera.userserviceapi.controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +18,8 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
@@ -30,8 +35,26 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler({Exception.class})
+    public ResponseEntity<String> handleGenericException(Exception e) {
+        logger.error("Controller generic exception: " + e.getMessage());
+        return ResponseEntity
+                .status(HttpServletResponse.SC_BAD_REQUEST)
+                .body("Error on request processing. Contact support.");
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        logger.error("Illegal argument exception: " + e.getMessage());
+        return ResponseEntity
+                .status(HttpServletResponse.SC_BAD_REQUEST)
+                .body("Can't process request.");
+    }
+
+    @ExceptionHandler({ExpiredJwtException.class})
     public ResponseEntity<String> handleExpiredJwtException() {
-        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Session expired. Login required.");
+        return ResponseEntity
+                .status(HttpServletResponse.SC_UNAUTHORIZED)
+                .body("Session expired. Login required.");
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
