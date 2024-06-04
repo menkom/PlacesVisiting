@@ -26,7 +26,6 @@ public class UserService implements UserDetailsService {
             throw new BadCredentialsException("Username can't be empty");
         }
         return accountRepository.findByUsername(username)
-                .map(account -> new User(account.getUsername(), account.getPassword(), new ArrayList<>()))
                 .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("Username {0} not found.", username)));
     }
 }
