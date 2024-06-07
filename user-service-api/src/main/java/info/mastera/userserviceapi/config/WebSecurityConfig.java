@@ -2,12 +2,9 @@ package info.mastera.userserviceapi.config;
 
 import info.mastera.userserviceapi.filter.JwtFilter;
 import info.mastera.userserviceapi.service.OAuth2UserService;
-import info.mastera.userserviceapi.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,16 +34,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserService userService) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   UserService userService,
                                                    JwtFilter jwtFilter,
                                                    OAuth2UserService oAuth2UserService) throws Exception {
         return http
@@ -64,7 +52,6 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(IF_REQUIRED))
-                .authenticationProvider(authenticationProvider(userService))
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(infoEndpoint -> infoEndpoint.userService(oAuth2UserService)))
                 .formLogin(formLogin -> formLogin
                         .loginPage("/accout/login")
@@ -76,7 +63,7 @@ public class WebSecurityConfig {
                         .clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 )
-                .oidcLogout((logout) -> logout
+                .oidcLogout(logout -> logout
                         .backChannel(Customizer.withDefaults())
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
