@@ -13,6 +13,7 @@ public interface PlaceMapper {
     @Mapping(target = "id", ignore = true)
     Place toEntity(PlaceCreateRequest request);
 
+    @Mapping(target = "id", ignore = true)
     Place toEntity(PlacePatchRequest request);
 
     PlaceResponse fromEntity(Place place);
