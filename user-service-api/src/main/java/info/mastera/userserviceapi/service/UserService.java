@@ -1,15 +1,13 @@
 package info.mastera.userserviceapi.service;
 
+import info.mastera.userserviceapi.model.Account;
 import info.mastera.userserviceapi.repository.AccountRepository;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -21,7 +19,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Account loadUserByUsername(String username) throws UsernameNotFoundException {
         if (null == username || username.isEmpty()) {
             throw new BadCredentialsException("Username can't be empty");
         }
