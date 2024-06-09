@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'maven-publish' //plugin is applied to handle publishing artifacts
+    id 'org.springframework.boot' version '3.3.0'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'info.mastera'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar() //generates a sources
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:3.3.0'
+}
+
+// Ensure the bootJar task does not override the jar task
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+//Configures the maven-publish plugin to use the jar task output for publishing.
+publishing {
+    publications {
+        //noinspection GroovyAssignabilityCheck
+        maven(MavenPublication) {
+            //noinspection GroovyAssignabilityCheck
+            from components.java // Specify the Java component to publish
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
