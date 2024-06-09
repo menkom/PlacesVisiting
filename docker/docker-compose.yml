@@ -49,6 +49,18 @@ services:
       - rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
 
+  mock-notification-consumer:
+    container_name: mock-notification-consumer
+    build:
+      context: ../mock-notification-consumer/
+      dockerfile: ./Dockerfile
+    environment:
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+    depends_on:
+      - rabbitmq
+
   places-visiting-api:
     container_name: places-visiting-api
     build:
