@@ -68,7 +68,7 @@ Content-Type: application/json
 }
 
 ###
-# @name Login with existing user
+# @name Login with existing user to use for testing
 POST {{HOST}}/account/login
 Content-Type: application/json
 
@@ -184,7 +184,7 @@ POST {{HOST}}/places
 %}
 
 ###
-# @name Login with existing user
+# @name Login with existing user to manipulate with places
 POST {{HOST}}/account/login
 Content-Type: application/json
 
@@ -353,3 +353,9 @@ Authorization: Bearer {{auth-bearer-token}}
     "address": "rondo Daszyńskiego"
   }
 }
+
+###
+# @name Test notification message
+POST {{HOST}}/message
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
