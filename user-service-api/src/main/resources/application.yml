@@ -37,8 +37,17 @@ spring:
               - email
               - address
               - phone
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    username: ${RABBIT_USERNAME:someuser}
+    password: ${RABBIT_PASSWORD:random_password}
+
 logging:
   level:
     root: INFO
 jwt:
   shared-key: ${JWT_SHARED_KEY:DEFAULT64CHARKEY5368566D5970337336763979244226452948404D63510000}
+
+queue:
+  outbound:
+    notification: notification-queue
