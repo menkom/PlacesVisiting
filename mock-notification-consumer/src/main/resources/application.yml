@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mock-notification-consumer
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    username: ${RABBIT_USERNAME:someuser}
+    password: ${RABBIT_PASSWORD:random_password}
+
+queue:
+  inbound:
+    notification: notification-queue
