@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'maven-publish' //plugin is applied to handle publishing artifacts
+}
+
+group = 'info.mastera'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar() //generates a sources
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitApiVersion = '5.10.2'
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:$junitApiVersion")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+//Configures the maven-publish plugin to use the jar task output for publishing.
+publishing {
+    publications {
+        //noinspection GroovyAssignabilityCheck
+        maven(MavenPublication) {
+            //noinspection GroovyAssignabilityCheck
+            from components.java // Specify the Java component to publish
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+test {
+    systemProperty "file.encoding", "utf-8"
+    useJUnitPlatform()
+}
