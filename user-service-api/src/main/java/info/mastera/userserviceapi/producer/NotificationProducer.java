@@ -1,6 +1,7 @@
 package info.mastera.userserviceapi.producer;
 
 import info.mastera.rabbitmq.dto.NotificationMessage;
+import info.mastera.userserviceapi.mapper.NotificationMessageMapper;
 import info.mastera.userserviceapi.model.Account;
 import info.mastera.userserviceapi.model.Place;
 import info.mastera.userserviceapi.model.Trip;
@@ -22,31 +23,27 @@ public class NotificationProducer {
     private String notificationQueue;
 
     private final RabbitTemplate template;
+    private final NotificationMessageMapper notificationMessageMapper;
 
-    public NotificationProducer(RabbitTemplate template) {
+    public NotificationProducer(RabbitTemplate template,
+                                NotificationMessageMapper notificationMessageMapper) {
         this.template = template;
+        this.notificationMessageMapper = notificationMessageMapper;
     }
 
     public void sendNotificationTripStored(Trip trip) {
-        String placeName = Optional.ofNullable(trip.getPlace())
-                .map(Place::getName)
-                .map(" to %s"::formatted)
-                .orElse("");
-        String message = "Trip on %s%s stored".formatted(trip.getDate(), placeName);
-        sendMessage(new NotificationMessage(trip.getOwnerId(), message));
+        NotificationMessage notificationMessage =
+                new NotificationMessage(trip.getOwnerId(), notificationMessageMapper.convert(trip));
+        sendMessage(notificationMessage);
     }
 
     public void sendNotificationPlaceStored(Place place) {
         Optional<Long> accountId = Optional.ofNullable(AuthUtils.getAccount())
                 .map(Account::getId);
         if (accountId.isPresent()) {
-            String country = Optional.ofNullable(place.getCountry())
-                    .map(" in %s"::formatted)
-                    .orElse("");
-            String message = "Place with name %s%s stored"
-                    .formatted(place.getName(), country);
-
-            sendMessage(new NotificationMessage(accountId.get(), message));
+            NotificationMessage notificationMessage =
+                    new NotificationMessage(accountId.get(), notificationMessageMapper.convert(place));
+            sendMessage(notificationMessage);
         } else {
             logger.error("No account id found on saving {}", place);
         }
