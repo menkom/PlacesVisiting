@@ -36,7 +36,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<String> handleGenericException(Exception e) {
-        logger.error("Controller generic exception: " + e.getMessage());
+        logger.error("Controller generic exception: {}", e.getMessage(), e);
         return ResponseEntity
                 .status(HttpServletResponse.SC_BAD_REQUEST)
                 .body("Error on request processing. Contact support.");
@@ -44,7 +44,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        logger.error("Illegal argument exception: " + e.getMessage());
+        logger.error("Illegal argument exception: {}", e.getMessage(), e);
         return ResponseEntity
                 .status(HttpServletResponse.SC_BAD_REQUEST)
                 .body("Can't process request.");
