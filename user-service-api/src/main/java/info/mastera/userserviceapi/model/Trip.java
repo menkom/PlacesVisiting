@@ -13,6 +13,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Entity
 public class Trip {
@@ -85,5 +86,17 @@ public class Trip {
     public Trip setCompanions(List<String> companions) {
         this.companions = companions;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Trip.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("date=" + date)
+                .add("ownerId=" + ownerId)
+                .add("publicId='" + publicId + "'")
+                .add("place=" + place)
+                .add("companions=" + companions)
+                .toString();
     }
 }
