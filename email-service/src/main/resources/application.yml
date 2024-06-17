@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: email-service
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    username: ${RABBIT_USERNAME:someuser}
+    password: ${RABBIT_PASSWORD:random_password}
+  mail:
+    username: ${GMAIL_USER_NAME}
+    password: ${GMAIL_TOKEN}
+
+queue:
+  inbound:
+    email-calendar-event: email-calendar-event-queue
