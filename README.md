@@ -153,3 +153,11 @@ After getting answers to questions for assignment points application architectur
    * Email 
    * Push message
    * Telegram (but this is another field in user description that was not planned at the moment)
+
+### Google Calendar Event
+Application sends in email link to add event to Google Calendar. This solution suites in case when you need to use Google Calendar only. There is option to generate .ics file (iCalendar) and attach it to email. This solution is more universal but all value are set. 
+
+iCalendar examples and libraries
+* [Managing Calendar and Invites in Java](https://thinkuldeep.com/post/java-calendar-and-invite/)
+* [iCal4j - modifying or creating new iCalendar](https://ical4j.sourceforge.net/introduction.html)
+* [[Stack Overflow] Best iCalendar library for Java?](https://stackoverflow.com/questions/33901/best-icalendar-library-for-java)
