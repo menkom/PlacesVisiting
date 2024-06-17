@@ -6,8 +6,12 @@ spring:
     username: ${RABBIT_USERNAME:someuser}
     password: ${RABBIT_PASSWORD:random_password}
   mail:
-    username: ${GMAIL_USER_NAME}
-    password: ${GMAIL_TOKEN}
+    username: ${GMAIL_USER_NAME:OVERRIDE_VALUE}
+    password: ${GMAIL_TOKEN:OVERRIDE_VALUE}
+
+logging:
+  level:
+    info.mastera.emailservice.listener: DEBUG
 
 queue:
   inbound:
