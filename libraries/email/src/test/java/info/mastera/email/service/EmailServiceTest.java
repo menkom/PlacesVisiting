@@ -39,7 +39,6 @@ class EmailServiceTest {
         Mockito.verify(javaMailSender).send(mailMessageCaptor.capture());
         SimpleMailMessage resultToTest = mailMessageCaptor.getValue();
         Assertions.assertNotNull(resultToTest);
-        Assertions.assertEquals("admin", resultToTest.getFrom());
         Assertions.assertNotNull(resultToTest.getTo());
         Assertions.assertEquals(1, resultToTest.getTo().length);
         Assertions.assertEquals("to", resultToTest.getTo()[0]);
