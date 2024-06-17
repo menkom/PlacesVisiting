@@ -35,4 +35,14 @@ public class Validate {
             throw new IllegalArgumentException(errMsg);
         }
     }
+
+    /**
+     * Can be used instead of Assert to check that condition is correct otherwise throw an exception
+     * Throws {@link IllegalArgumentException} if object {@code isEmpty()}
+     */
+    public static void isValid(boolean condition, String errMsg) {
+        if (!condition) {
+            throw new IllegalArgumentException(errMsg);
+        }
+    }
 }
