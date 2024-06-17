@@ -61,6 +61,20 @@ services:
     depends_on:
       - rabbitmq
 
+  email-service:
+    container_name: email-service
+    build:
+      context: ../email-service/
+      dockerfile: ./Dockerfile
+    environment:
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - GMAIL_USER_NAME=${GMAIL_USER_NAME}
+      - GMAIL_TOKEN=${GMAIL_TOKEN}
+    depends_on:
+      - rabbitmq
+
   places-visiting-api:
     container_name: places-visiting-api
     build:
