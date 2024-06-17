@@ -22,13 +22,23 @@ ext {
     fasterxmlJacksonVersion = '2.17.1'
     rabbitmqVersion = '0.0.2-SNAPSHOT'
     emailVersion = '0.0.1-SNAPSHOT'
+    googleCalendarEvenVersion = '0.0.1-SNAPSHOT'
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation "info.mastera:rabbitmq:$rabbitmqVersion"
     implementation "info.mastera:email:$emailVersion"
+    implementation "info.mastera:google-calendar-event:$googleCalendarEvenVersion"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:$fasterxmlJacksonVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$fasterxmlJacksonVersion"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    systemProperty "file.encoding", "utf-8"
+    useJUnitPlatform()
 }
