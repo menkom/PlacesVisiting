@@ -122,6 +122,13 @@ public class GoogleCalendarEvent {
         return guests;
     }
 
+    public GoogleCalendarEvent addGuests(Collection<String> guests) {
+        if(guests!=null) {
+            this.guests.addAll(guests);
+        }
+        return this;
+    }
+
     public GoogleCalendarEvent addGuest(String guest) {
         this.guests.add(guest);
         return this;
