@@ -16,7 +16,7 @@ services:
     environment:
       - POSTGRES_USER=${DATASOURCE_USER}
       - POSTGRES_PASSWORD=${DATASOURCE_PASSWORD}
-      - POSTGRES_MULTIPLE_DATABASES=${USER_DATABASE_NAME}
+      - POSTGRES_MULTIPLE_DATABASES=${USER_DATABASE_NAME},${IMAGE_DATABASE_NAME}
     ports:
       - '5432:5432'
     volumes:
@@ -93,9 +93,49 @@ services:
       db-places-visiting:
         condition: service_healthy
 
+  minio-storage:
+    image: minio/minio:RELEASE.2024-06-13T22-53-53Z
+    container_name: minio-storage
+    restart: unless-stopped
+    command: server --console-address ":9001" /data/
+#    command: server /export
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-storage:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+#      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"] curl is not included anymore in base image
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio-default-buckets-create-service:
+    image: minio/mc:RELEASE.2024-06-12T14-34-03Z
+    container_name: minio-default-buckets-create-service
+    restart: on-failure
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set minioAlias http://minio-storage:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc mb minioAlias/${MINIO_BUCKET};
+      /usr/bin/mc policy set public minioAlias/${MINIO_BUCKET};
+      "
+    depends_on:
+      minio-storage:
+        condition: service_healthy
+
 volumes:
   pv-postgres:
   rabbitmq:
+  minio-storage:
 
 secrets:
   rabbit_config:
