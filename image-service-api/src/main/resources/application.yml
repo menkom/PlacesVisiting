@@ -1,0 +1,45 @@
+# Spring Boot Actuator settings
+server:
+  servlet:
+    context-path: /api
+  port: 8082
+management:
+  server:
+    port: 8083
+  endpoints:
+    web:
+      exposure:
+        include: info,health
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB # Max size in case you upload several files
+  application:
+    name: image-service-api
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql:///image_storage}
+    username: ${DATASOURCE_USER:user}
+    password: ${DATASOURCE_PASSWORD:password}
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: INFO
+
+amazon:
+  s3:
+    host: ${S3_HOST:http://localhost:9000}
+    region: ${S3_REGION:aws-global}
+    access-key: ${S3_ACCESS_KEY:OVERRIDE_VALUE}
+    secret-key: ${S3_SECRET_KEY:OVERRIDE_VALUE}
+    bucket: ${S3_BUCKET:place-visiting-images}
+
+images:
+  accepted-content-types: image/png, image/jpg, image/jpeg, image/webp
+  accepted-file-extensions: jpg, png, jpeg, webp

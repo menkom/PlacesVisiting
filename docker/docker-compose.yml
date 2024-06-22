@@ -98,7 +98,6 @@ services:
     container_name: minio-storage
     restart: unless-stopped
     command: server --console-address ":9001" /data/
-#    command: server /export
     ports:
       - "9000:9000"
       - "9001:9001"

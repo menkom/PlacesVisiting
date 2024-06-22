@@ -1,0 +1,13 @@
+@HOST=http://localhost:8082/api
+@placeId=1
+
+###
+# @name Get list of pictures for placeId
+GET {{HOST}}/images/{{placeId}}?page=0&size=5
+
+> {%
+  client.test("Items fetched", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+###

@@ -1,0 +1,112 @@
+@HOST=http://localhost:8082/api
+@placeId=1
+
+###
+# @name upload text file
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="empty_file_to_test.txt"
+Content-Type: text/plain
+
+< ./files/empty_file_to_test.txt
+--WebAppBoundary--
+
+> {%
+  client.test("Invalid file type and return 400", function () {
+    client.assert(response.status === 400, "Response status is not 400");
+  });
+%}
+
+###
+# @name upload image warsaw-line-icon-city-eastern
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="warsaw-line-icon-city-eastern.jpeg"
+Content-Type: image/jpeg
+
+< ./files/warsaw-line-icon-city-eastern.jpeg
+--WebAppBoundary--
+
+> {%
+  client.test("File saved", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name upload warsaw logo image
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="warsaw-logo.png"
+Content-Type: image/png
+
+< ./files/warsaw-logo.png
+--WebAppBoundary--
+
+> {%
+  client.test("File saved", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name upload image warsaw-poland-europe-flat-icon
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="warsaw-poland-europe-flat-icon.jpg"
+Content-Type: image/jpg
+
+< ./files/warsaw-poland-europe-flat-icon.jpg
+--WebAppBoundary--
+
+> {%
+  client.test("File saved", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name upload image WarsawZoo
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="WarsawZoo.jpg"
+Content-Type: image/jpg
+
+< ./files/WarsawZoo.jpg
+--WebAppBoundary--
+
+> {%
+  client.test("File saved", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name upload image Warszawa-Wieszak-na-ubrania
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="Warszawa-Wieszak-na-ubrania.webp"
+Content-Type: image/webp
+
+< ./files/Warszawa-Wieszak-na-ubrania.webp
+--WebAppBoundary--
+
+> {%
+  client.test("File saved", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
