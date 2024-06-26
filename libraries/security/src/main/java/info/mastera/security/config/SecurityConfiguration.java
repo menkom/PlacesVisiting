@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(
                                         "/",
                                         "/favicon.ico",
+                                        "/actuator/**",
                                         "/error").permitAll()
                                 .anyRequest().authenticated()
                 )

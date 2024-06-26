@@ -4,8 +4,6 @@ server:
     context-path: /api
   port: 8082
 management:
-  server:
-    port: 8083
   endpoints:
     web:
       exposure:

@@ -49,6 +49,7 @@ public class WebSecurityConfig {
                                         "/account",
                                         "/account/*",
                                         "/login**",
+                                        "/actuator/**",
                                         "/error").permitAll()
                                 .anyRequest().authenticated()
                 )
