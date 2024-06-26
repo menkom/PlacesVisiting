@@ -20,4 +20,16 @@ class AccountStatusMapperTest {
         Assertions.assertThat(resultToTest.getId()).isEqualTo(23L);
         Assertions.assertThat(resultToTest.getUsername()).isEqualTo("UserFromResponse@");
     }
+
+    @Test
+    void convertNotFoundAccountStatusResponseTest() {
+        AccountStatusResponse accountStatusResponse =
+                new AccountStatusResponse(null, null);
+
+        var resultToTest = mapper.convert(accountStatusResponse);
+
+        Assertions.assertThat(resultToTest).isNotNull();
+        Assertions.assertThat(resultToTest.getId()).isNull();
+        Assertions.assertThat(resultToTest.getUsername()).isNull();
+    }
 }

@@ -64,7 +64,7 @@ public class InternalAuthClient {
                 Thread.currentThread().interrupt();
             }
         }
-        return null;
+        return new AccountStatusResponse();
     }
 
     private AccountStatusResponse mapToObject(HttpResponse<String> response) throws JsonProcessingException {
