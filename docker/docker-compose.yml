@@ -16,17 +16,18 @@ services:
     environment:
       - POSTGRES_USER=${DATASOURCE_USER}
       - POSTGRES_PASSWORD=${DATASOURCE_PASSWORD}
-      - POSTGRES_MULTIPLE_DATABASES=${ACCOUNT_DATABASE_NAME},${USER_DATABASE_NAME},${IMAGE_DATABASE_NAME}
+      - POSTGRES_MULTIPLE_DATABASES=${ACCOUNT_DATABASE_NAME},${TRIP_DATABASE_NAME},${IMAGE_DATABASE_NAME}
     ports:
       - '5432:5432'
     volumes:
       - pv-postgres:/var/lib/postgresql/data
       - ./create-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
     healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DATASOURCE_USER} -d ${USER_DATABASE_NAME}'"]
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DATASOURCE_USER} -d ${ACCOUNT_DATABASE_NAME}'"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -48,6 +49,12 @@ services:
     volumes:
       - rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   mock-notification-consumer:
     container_name: mock-notification-consumer
@@ -100,24 +107,33 @@ services:
       - GMAIL_USER_NAME=${GMAIL_USER_NAME}
       - GMAIL_TOKEN=${GMAIL_TOKEN}
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
-  places-visiting-api:
-    container_name: places-visiting-api
+  trip-service-api:
+    container_name: trip-service-api
     build:
-      context: ../user-service-api/
+      context: ../trip-service-api/
       dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
     environment:
-      - DATASOURCE_URL=${DATASOURCE_URL}${USER_DATABASE_NAME}
+      - DATASOURCE_URL=${DATASOURCE_URL}${TRIP_DATABASE_NAME}
       - DATASOURCE_USER=${DATASOURCE_USER}
       - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
       - SPRING_SECURITY_USER_PASSWORD=${SPRING_SECURITY_USER_PASSWORD_DEFAULT}
-      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
-      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - JWT_SHARED_KEY=${JWT_SHARED_KEY}
+      - AUTH_INTERNAL_URL=${AUTH_INTERNAL_URL}
+      - AUTH_INTERNAL_TOKEN=${AUTH_INTERNAL_TOKEN}
     depends_on:
       db-places-visiting:
+        condition: service_healthy
+      auth-service-api:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   minio-storage:
