@@ -79,11 +79,11 @@ services:
       - JWT_SHARED_KEY=${JWT_SHARED_KEY}
       - AUTH_INTERNAL_TOKEN=${AUTH_INTERNAL_TOKEN}
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      test: "wget -T5 -qO- http://localhost:8079/api/actuator/health | grep UP || exit 1"
       interval: 20s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 10s
     depends_on:
       db-places-visiting:
         condition: service_healthy
@@ -155,6 +155,38 @@ services:
       /usr/bin/mc policy set public minioAlias/${MINIO_BUCKET};
       "
     depends_on:
+      minio-storage:
+        condition: service_healthy
+
+  image-service:
+    container_name: image-service
+    build:
+      context: ../image-service-api/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - DATASOURCE_URL=${DATASOURCE_URL}${IMAGE_DATABASE_NAME}
+      - DATASOURCE_USER=${DATASOURCE_USER}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+      - SPRING_SECURITY_USER_PASSWORD=${SPRING_SECURITY_USER_PASSWORD_DEFAULT}
+      - S3_ACCESS_KEY=${MINIO_ROOT_USER}
+      - S3_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - S3_BUCKET=${MINIO_BUCKET}
+      - JWT_SHARED_KEY=${JWT_SHARED_KEY}
+      - AUTH_INTERNAL_URL=${AUTH_INTERNAL_URL}
+      - AUTH_INTERNAL_TOKEN=${AUTH_INTERNAL_TOKEN}
+    healthcheck:
+      test: "wget -T5 -qO- http://localhost:8082/api/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      db-places-visiting:
+        condition: service_healthy
       minio-storage:
         condition: service_healthy
 
