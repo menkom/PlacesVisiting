@@ -1,92 +1,6 @@
 @HOST=http://127.0.0.1:8080/api
 @account="user"
 ###
-# @name Login without body
-POST {{HOST}}/account/login
-
-> {%
-  client.test("Request without body should be denied and return 400", function () {
-    client.assert(response.status === 400, "Response status is not 400");
-  });
-%}
-
-###
-# @name Login with empty username
-POST {{HOST}}/account/login
-Content-Type: application/json
-
-{
-  "username": "",
-  "password": "pass"
-}
-
-> {%
-  client.test("Invalid username field", function () {
-    client.assert(response.status === 400, "Response status is not 400");
-  });
-%}
-
-###
-# @name Login with empty password
-POST {{HOST}}/account/login
-Content-Type: application/json
-
-{
-  "username": "user",
-  "password": ""
-}
-
-> {%
-  client.test("Invalid password field", function () {
-    client.assert(response.status === 400, "Response status is not 400");
-  });
-%}
-
-###
-# @name Login before user creation
-POST {{HOST}}/account/login
-Content-Type: application/json
-
-{
-  "username": "user",
-  "password": "pass"
-}
-
-> {%
-  client.test("No users exists", function () {
-    client.assert(response.status === 403, "Response status is not 403");
-  });
-%}
-
-###
-# @name Create new account
-POST {{HOST}}/account/create
-Content-Type: application/json
-
-{
-  "username": {{account}},
-  "password": "pass"
-}
-
-###
-# @name Login with existing user to use for testing
-POST {{HOST}}/account/login
-Content-Type: application/json
-
-{
-  "username": {{account}},
-  "password": "pass"
-}
-
-> {%
-  client.global.set("auth-bearer-token", null);
-  client.test("User login successfully", function () {
-    client.assert(response.status === 200, "Response status is not 200");
-    const token = response.body;
-    client.global.set("auth-bearer-token", token);
-  });
-%}
-
 
 ###
 # @name Test unauthenticated
@@ -133,22 +47,6 @@ Authorization: Bearer {{auth-bearer-token}}
 %}
 
 ###
-# @name Logout current user and redirect to login page
-#@no-redirect
-GET {{HOST}}/logout
-
-> {%
-  client.test("User logout successfully", function () {
-    client.assert(response.status === 302, "Response status is not 302");
-    client.global.set("auth-bearer-token", null);
-    const location = response.headers.valueOf('Location');
-    client.assert(
-      location && location.endsWith("accout/login?logout"),
-      "No redirect location");
-  });
-%}
-
-###
 # @name Attempt to get principal info but not authenticated (should be no session data)
 #@no-redirect
 GET {{HOST}}/principal
@@ -156,21 +54,6 @@ GET {{HOST}}/principal
 > {%
   client.test("Unauthorized request", function () {
     client.assert(response.status === 401, "Response status is not 401");
-  });
-%}
-
-###
-# @name Login with Google. This endpoint redirects to Google and sets all necessary request params
-#@no-redirect
-GET {{HOST}}/oauth2/authorization/google
-
-> {%
-  client.test("Request is redirected to Google", function () {
-    client.assert(response.status === 302, "Response status is not 302");
-    const location = response.headers.valueOf('Location');
-    client.assert(
-      location && location.startsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id="),
-      "No redirect location");
   });
 %}
 

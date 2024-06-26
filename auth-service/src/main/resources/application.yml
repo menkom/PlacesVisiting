@@ -1,0 +1,51 @@
+server:
+  servlet:
+    context-path: /api
+  port: 8079
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    hikari:
+      connectionTimeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/account_storage}
+    username: ${DATASOURCE_USER:user}
+    password: ${DATASOURCE_PASSWORD:password}
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    default-schema: ${ACCOUNT_DATABASE_NAME:account_storage}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+              - address
+              - phone
+jwt:
+  shared-key: ${JWT_SHARED_KEY:DEFAULT64CHARKEY5368566D5970337336763979244226452948404D63510000}
+
+internal-communication-token: ${INTERNAL_COMMUNICATION_TOKEN:RandomTOKEN}
+
+logging:
+  level:
+    info.mastera.authservice: DEBUG
