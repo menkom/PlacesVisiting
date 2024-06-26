@@ -1,10 +1,30 @@
 @HOST=http://localhost:8082/api
+@ACCOUNT_HOST=http://127.0.0.1:8079/api
 @placeId=1
+
+###
+# @name attempt to upload text file unauthorized
+POST {{HOST}}/images/{{placeId}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="empty_file_to_test.txt"
+Content-Type: text/plain
+
+< ./files/empty_file_to_test.txt
+--WebAppBoundary--
+
+> {%
+  client.test("Unauthorized and return 401", function () {
+    client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
 
 ###
 # @name upload text file
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="empty_file_to_test.txt"
@@ -23,6 +43,7 @@ Content-Type: text/plain
 # @name upload image warsaw-line-icon-city-eastern
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="warsaw-line-icon-city-eastern.jpeg"
@@ -41,6 +62,7 @@ Content-Type: image/jpeg
 # @name upload warsaw logo image
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="warsaw-logo.png"
@@ -59,6 +81,7 @@ Content-Type: image/png
 # @name upload image warsaw-poland-europe-flat-icon
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="warsaw-poland-europe-flat-icon.jpg"
@@ -77,6 +100,7 @@ Content-Type: image/jpg
 # @name upload image WarsawZoo
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="WarsawZoo.jpg"
@@ -95,6 +119,7 @@ Content-Type: image/jpg
 # @name upload image Warszawa-Wieszak-na-ubrania
 POST {{HOST}}/images/{{placeId}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth-bearer-token}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="Warszawa-Wieszak-na-ubrania.webp"
