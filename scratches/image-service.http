@@ -1,13 +1,46 @@
 @HOST=http://localhost:8082/api
+@ACCOUNT_HOST=http://127.0.0.1:8079/api
 @placeId=1
+@account="user"
 
 ###
-# @name Get list of pictures for placeId
+# @name Get list of pictures for placeId without authentication
 GET {{HOST}}/images/{{placeId}}?page=0&size=5
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
+
+###
+# @name Login with existing user to use for testing
+POST {{ACCOUNT_HOST}}/account/login
+Content-Type: application/json
+
+{
+  "username": {{account}},
+  "password": "pass"
+}
+
+> {%
+  client.global.set("auth-bearer-token", null);
+  client.test("User login successfully", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+    const token = response.body;
+    client.global.set("auth-bearer-token", token);
+  });
+%}
+
+###
+# @name Get list of pictures for placeId for authorized user
+GET {{HOST}}/images/{{placeId}}?page=0&size=5
+Authorization: Bearer {{auth-bearer-token}}
 
 > {%
   client.test("Items fetched", function () {
     client.assert(response.status === 200, "Response status is not 200");
   });
 %}
+
 ###

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'info.mastera'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 
 java {
     toolchain {
@@ -15,11 +15,13 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 ext {
     logbackEncoderVersion = '7.4'
     awsSdkVersion = '2.26.4'
+    securityVersion = '0.0.1-SNAPSHOT'
 }
 
 dependencies {
@@ -30,6 +32,8 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
     implementation "software.amazon.awssdk:s3:$awsSdkVersion"
+
+    implementation "info.mastera:security:${securityVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
