@@ -61,10 +61,10 @@ services:
     depends_on:
       - rabbitmq
 
-  auth-service:
-    container_name: auth-service
+  auth-service-api:
+    container_name: auth-service-api
     build:
-      context: ../auth-service/
+      context: ../auth-service-api/
       dockerfile: ./Dockerfile
     ports:
       - "8079:8079"
@@ -158,8 +158,8 @@ services:
       minio-storage:
         condition: service_healthy
 
-  image-service:
-    container_name: image-service
+  image-service-api:
+    container_name: image-service-api
     build:
       context: ../image-service-api/
       dockerfile: ./Dockerfile
@@ -183,7 +183,7 @@ services:
       retries: 5
       start_period: 10s
     depends_on:
-      auth-service:
+      auth-service-api:
         condition: service_healthy
       db-places-visiting:
         condition: service_healthy
