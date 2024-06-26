@@ -12,8 +12,6 @@ management:
 spring:
   application:
     name: user-service-api
-  profiles:
-    default: dev
   datasource:
     url: ${DATASOURCE_URL:jdbc:postgresql:///user_places_visiting}
     username: ${DATASOURCE_USER:user}
