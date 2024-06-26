@@ -1,4 +1,4 @@
-package info.mastera.userserviceapi.service;
+package info.mastera.authservice.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

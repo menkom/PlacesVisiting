@@ -28,8 +28,7 @@ import java.util.List;
 @Table(
         indexes = {
                 @Index(name = "uk_username", columnList = "username", unique = true),
-        },
-        schema = "account_storage"
+        }
 )
 public class Account implements UserDetails {
 

@@ -27,7 +27,6 @@ spring:
     hibernate:
       ddl-auto: none
   liquibase:
-    default-schema: ${ACCOUNT_DATABASE_NAME:account_storage}
   security:
     oauth2:
       client:
