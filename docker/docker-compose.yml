@@ -61,6 +61,33 @@ services:
     depends_on:
       - rabbitmq
 
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ../auth-service/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8079:8079"
+    environment:
+      - DATASOURCE_URL=${DATASOURCE_URL}${ACCOUNT_DATABASE_NAME}
+      - DATASOURCE_USER=${DATASOURCE_USER}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+      - SPRING_SECURITY_USER_PASSWORD=${SPRING_SECURITY_USER_PASSWORD_DEFAULT}
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - ACCOUNT_DATABASE_NAME=${ACCOUNT_DATABASE_NAME}
+      - JWT_SHARED_KEY=${JWT_SHARED_KEY}
+      - AUTH_INTERNAL_TOKEN=${AUTH_INTERNAL_TOKEN}
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    depends_on:
+      db-places-visiting:
+        condition: service_healthy
+
   email-service:
     container_name: email-service
     build:
