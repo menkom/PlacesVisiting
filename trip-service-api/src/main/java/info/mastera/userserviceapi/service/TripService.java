@@ -1,5 +1,7 @@
 package info.mastera.userserviceapi.service;
 
+import info.mastera.security.dto.AccountDto;
+import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.dto.TripCreateRequest;
 import info.mastera.userserviceapi.dto.TripResponse;
 import info.mastera.userserviceapi.mapper.PlaceMapper;
@@ -14,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 @Service
 public class TripService {
@@ -39,7 +42,7 @@ public class TripService {
         this.emailCalendarEventProducer = emailCalendarEventProducer;
     }
 
-    public TripResponse save(TripCreateRequest request, Long ownerId) {
+    public TripResponse save(TripCreateRequest request) {
         Place place = null;
         if (request.placeId() != null) {
             place = placeRepository.findById(request.placeId())
@@ -55,9 +58,12 @@ public class TripService {
             place = placeRepository.save(placeMapper.toEntity(request.place()));
         }
         Trip trip = tripMapper.toEntity(request)
-                .setOwnerId(ownerId)
-                .setPlace(place);
-
+                .setPlace(place)
+                .setOwnerId(
+                        Optional.ofNullable(AuthUtils.getAccount())
+                                .map(AccountDto::getId)
+                                .orElseThrow(() -> new EntityNotFoundException("User ID was not found"))
+                );
 
         TripResponse result = tripMapper.fromEntity(
                 tripRepository.save(trip));

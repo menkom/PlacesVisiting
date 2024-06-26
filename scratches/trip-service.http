@@ -1,61 +1,7 @@
 @HOST=http://127.0.0.1:8080/api
+@ACCOUNT_HOST=http://127.0.0.1:8079/api
 @account="user"
 ###
-
-###
-# @name Test unauthenticated
-GET {{HOST}}/test
-
-> {%
-  client.test("Unauthorized request", function () {
-    client.assert(response.status === 401, "Response status is not 401");
-  });
-%}
-
-
-###
-# @name Test authenticated
-GET {{HOST}}/test
-Authorization: Bearer {{auth-bearer-token}}
-
-> {%
-  client.test("Authorized request", function () {
-    client.assert(response.status === 200, "Response status is not 200");
-  });
-  client.test("Received expected response", function () {
-    client.assert(response.body === 'You are authenticated', "Unexpected response body");
-  });
-%}
-
-
-###
-# @name Get current principal info
-GET {{HOST}}/principal
-Authorization: Bearer {{auth-bearer-token}}
-
-> {%
-  client.test("Authorized request", function () {
-    client.assert(response.status === 200, "Response status is not 200");
-  });
-  client.test("Received expected response", function () {
-    client.assert(response.body, "Unexpected response body");
-    const sourceKeys = Object.keys(response.body);
-    client.assert(
-      sourceKeys.includes("password") && sourceKeys.includes("username"),
-      "Not enough of fields");
-  });
-%}
-
-###
-# @name Attempt to get principal info but not authenticated (should be no session data)
-#@no-redirect
-GET {{HOST}}/principal
-
-> {%
-  client.test("Unauthorized request", function () {
-    client.assert(response.status === 401, "Response status is not 401");
-  });
-%}
 
 ###
 # @name Create place without authentication. No need to have body
@@ -69,7 +15,7 @@ POST {{HOST}}/places
 
 ###
 # @name Login with existing user to manipulate with places
-POST {{HOST}}/account/login
+POST {{ACCOUNT_HOST}}/account/login
 Content-Type: application/json
 
 {
@@ -237,9 +183,3 @@ Authorization: Bearer {{auth-bearer-token}}
     "address": "rondo Daszyńskiego"
   }
 }
-
-###
-# @name Test notification message
-POST {{HOST}}/message
-Content-Type: application/json
-Authorization: Bearer {{auth-bearer-token}}

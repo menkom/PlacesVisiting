@@ -1,11 +1,11 @@
 package info.mastera.userserviceapi.producer;
 
 import info.mastera.rabbitmq.dto.NotificationMessage;
+import info.mastera.security.dto.AccountDto;
+import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.mapper.NotificationMessageMapper;
-import info.mastera.userserviceapi.model.Account;
 import info.mastera.userserviceapi.model.Place;
 import info.mastera.userserviceapi.model.Trip;
-import info.mastera.userserviceapi.utils.AuthUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,16 +34,24 @@ public class NotificationProducer {
     public void sendNotificationTripStored(Trip trip) {
         NotificationMessage notificationMessage =
                 new NotificationMessage(trip.getOwnerId(), notificationMessageMapper.convert(trip));
-        sendMessage(notificationMessage);
+        try {
+            sendMessage(notificationMessage);
+        } catch (Exception e) {
+            logger.error("Failed to send notification about stored trip {} to {}", trip, notificationQueue, e);
+        }
     }
 
     public void sendNotificationPlaceStored(Place place) {
         Optional<Long> accountId = Optional.ofNullable(AuthUtils.getAccount())
-                .map(Account::getId);
+                .map(AccountDto::getId);
         if (accountId.isPresent()) {
             NotificationMessage notificationMessage =
                     new NotificationMessage(accountId.get(), notificationMessageMapper.convert(place));
-            sendMessage(notificationMessage);
+            try {
+                sendMessage(notificationMessage);
+            } catch (Exception e) {
+                logger.error("Failed to send notification about stored place {} to {}", place, notificationQueue, e);
+            }
         } else {
             logger.error("No account id found on saving {}", place);
         }

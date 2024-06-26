@@ -1,10 +1,10 @@
 package info.mastera.userserviceapi.producer;
 
 import info.mastera.rabbitmq.dto.CalendarEvent;
+import info.mastera.security.dto.AccountDto;
+import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.mapper.TripMapper;
-import info.mastera.userserviceapi.model.Account;
 import info.mastera.userserviceapi.model.Trip;
-import info.mastera.userserviceapi.utils.AuthUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -32,7 +32,7 @@ public class EmailCalendarEventProducer {
 
     public void sendEmailCalendarEvent(Trip trip) {
         Optional<String> userEmail = Optional.ofNullable(AuthUtils.getAccount())
-                .map(Account::getUsername);
+                .map(AccountDto::getUsername);
         if (userEmail.isPresent()) {
             CalendarEvent calendarEvent =
                     new CalendarEvent(userEmail.get(),
