@@ -3,15 +3,13 @@ server:
   servlet:
     context-path: /api
 management:
-  server:
-    port: 8081
   endpoints:
     web:
       exposure:
         include: info,health
 spring:
   application:
-    name: user-service-api
+    name: trip-service-api
   datasource:
     url: ${DATASOURCE_URL:jdbc:postgresql:///user_places_visiting}
     username: ${DATASOURCE_USER:user}

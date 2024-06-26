@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine:21.0.2 as builder
+FROM bellsoft/liberica-openjdk-alpine:21.0.2 AS builder
 WORKDIR /app
 COPY build.gradle gradlew settings.gradle ./
 COPY gradle/ gradle/
