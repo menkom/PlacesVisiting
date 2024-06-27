@@ -10,7 +10,7 @@ management:
 
 spring:
   application:
-    name: auth-service
+    name: auth-service-api
   datasource:
     hikari:
       connectionTimeout: 30000
@@ -26,7 +26,6 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
-  liquibase:
   security:
     oauth2:
       client:

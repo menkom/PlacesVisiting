@@ -11,7 +11,7 @@ spring:
   application:
     name: trip-service-api
   datasource:
-    url: ${DATASOURCE_URL:jdbc:postgresql:///user_places_visiting}
+    url: ${DATASOURCE_URL:jdbc:postgresql:///trip_storage}
     username: ${DATASOURCE_USER:user}
     password: ${DATASOURCE_PASSWORD:password}
   main:
