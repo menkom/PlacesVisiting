@@ -4,6 +4,7 @@ import info.mastera.security.dto.AccountDto;
 import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.dto.TripCreateRequest;
 import info.mastera.userserviceapi.dto.TripResponse;
+import info.mastera.userserviceapi.exception.UnauthorizedException;
 import info.mastera.userserviceapi.mapper.PlaceMapper;
 import info.mastera.userserviceapi.mapper.TripMapper;
 import info.mastera.userserviceapi.model.Place;
@@ -16,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -70,5 +72,23 @@ public class TripService {
         notificationProducer.sendNotificationTripStored(trip);
         emailCalendarEventProducer.sendEmailCalendarEvent(trip);
         return result;
+    }
+
+    public void delete(Long id) {
+        Trip trip = tripRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Trip with id=%s not found.".formatted(id)));
+        Long accountId = Optional.ofNullable(AuthUtils.getAccount())
+                .map(AccountDto::getId)
+                .orElseThrow(() -> new EntityNotFoundException("User ID was not found"));
+
+        if (trip.getOwnerId().equals(accountId)) {
+            if (LocalDate.now().isBefore(trip.getDate())) {
+                tripRepository.deleteById(id);
+            } else {
+                throw new UnauthorizedException("You are not allowed to delete a past trip.");
+            }
+        } else {
+            throw new UnauthorizedException("You are not authorized to delete this trip.");
+        }
     }
 }

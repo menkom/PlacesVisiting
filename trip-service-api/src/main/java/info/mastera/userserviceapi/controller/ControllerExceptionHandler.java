@@ -2,6 +2,7 @@ package info.mastera.userserviceapi.controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import info.mastera.userserviceapi.exception.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -75,5 +76,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({IllegalAccessException.class})
     public ResponseEntity<String> handleIllegalAccessException() {
         return ResponseEntity.badRequest().body("Can't map new value to existing");
+    }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException e) {
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+                .body(e.getMessage());
     }
 }

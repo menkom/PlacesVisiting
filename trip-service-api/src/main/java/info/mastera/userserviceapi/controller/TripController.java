@@ -4,6 +4,8 @@ import info.mastera.userserviceapi.dto.TripCreateRequest;
 import info.mastera.userserviceapi.dto.TripResponse;
 import info.mastera.userserviceapi.service.TripService;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +24,10 @@ public class TripController {
     @PostMapping
     public TripResponse create(@RequestBody @Valid TripCreateRequest request) {
         return tripService.save(request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        tripService.delete(id);
     }
 }

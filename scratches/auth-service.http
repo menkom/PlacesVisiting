@@ -1,5 +1,7 @@
 @HOST=http://127.0.0.1:8079/api
 @account="user"
+@account2="user2"
+
 ###
 # @name Login without body
 POST {{HOST}}/account/login
@@ -65,6 +67,16 @@ Content-Type: application/json
 
 {
   "username": {{account}},
+  "password": "pass"
+}
+
+###
+# @name Create new account for user2
+POST {{HOST}}/account/create
+Content-Type: application/json
+
+{
+  "username": {{account2}},
   "password": "pass"
 }
 

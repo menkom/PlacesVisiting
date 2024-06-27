@@ -1,6 +1,7 @@
 @HOST=http://127.0.0.1:8080/api
 @ACCOUNT_HOST=http://127.0.0.1:8079/api
 @account="user"
+@account2="user2"
 ###
 
 ###
@@ -19,7 +20,7 @@ POST {{ACCOUNT_HOST}}/account/login
 Content-Type: application/json
 
 {
-  "username": "user",
+  "username": {{account}},
   "password": "pass"
 }
 
@@ -147,7 +148,7 @@ Authorization: Bearer {{auth-bearer-token}}
 %}
 
 ###
-# @name Create trip
+# @name Create trip in future
 POST {{HOST}}/trips
 Content-Type: application/json
 Authorization: Bearer {{auth-bearer-token}}
@@ -158,16 +159,40 @@ Authorization: Bearer {{auth-bearer-token}}
   "companions": ["mike@gmail.com"]
 }
 
+> {%
+  client.test("Trip created", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    const tripIdInFuture = response.body.id;
+    client.global.set("trip-id-in-future", tripIdInFuture);
+  });
+%}
+
+
 ###
-# @name Create another trip
+# @name Create trip in past
 POST {{HOST}}/trips
 Content-Type: application/json
 Authorization: Bearer {{auth-bearer-token}}
 
 {
-  "date": "01/12/2024",
+  "date": "01/02/2024",
   "placeId": 2
 }
+
+> {%
+  client.test("Trip created", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+  client.test("Received expected response", function () {
+    client.assert(response.body, "Unexpected response body");
+    const tripIdFromPast = response.body.id;
+    client.global.set("trip-id-from-past", tripIdFromPast);
+  });
+%}
+
 
 ###
 # @name Create new trip with new place
@@ -183,3 +208,79 @@ Authorization: Bearer {{auth-bearer-token}}
     "address": "rondo Daszyńskiego"
   }
 }
+
+###
+# @name Login with existing user2 to manipulate with trips
+POST {{ACCOUNT_HOST}}/account/login
+Content-Type: application/json
+
+{
+  "username": {{account2}},
+  "password": "pass"
+}
+
+> {%
+  client.global.set("auth-bearer-token", null);
+  client.test("User login successfully", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+    const token = response.body;
+    client.global.set("auth-bearer-token", token);
+  });
+%}
+
+###
+# @name Attempt to delete trip of another user
+DELETE {{HOST}}/trips/{{trip-id-in-future}}
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
+
+###
+# @name Login with main user to manipulate with trips
+POST {{ACCOUNT_HOST}}/account/login
+Content-Type: application/json
+
+{
+  "username": {{account}},
+  "password": "pass"
+}
+
+> {%
+  client.global.set("auth-bearer-token", null);
+  client.test("User login successfully", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+    const token = response.body;
+    client.global.set("auth-bearer-token", token);
+  });
+%}
+
+
+###
+# @name Attempt to delete past trip
+DELETE {{HOST}}/trips/{{trip-id-from-past}}
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Unauthorized request", function () {
+    client.assert(response.status === 401, "Response status is not 401");
+  });
+%}
+
+
+###
+# @name Delete trip from future
+DELETE {{HOST}}/trips/{{trip-id-in-future}}
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trip deleted", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
