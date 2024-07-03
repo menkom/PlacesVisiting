@@ -284,3 +284,80 @@ Authorization: Bearer {{auth-bearer-token}}
     client.assert(response.status === 200, "Response status is not 200");
   });
 %}
+
+
+###
+# @name Get all trips
+GET {{HOST}}/trips
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+
+###
+# @name Filter trips date by period start
+GET {{HOST}}/trips?from=2024-11-02
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+
+###
+# @name Filter trips date by period end
+GET {{HOST}}/trips?to=2024-12-02
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+
+###
+# @name Filter trips by companion
+GET {{HOST}}/trips?companion=mike@gmail.com
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+
+###
+# @name Filter trips date by period end
+GET {{HOST}}/trips?country=pOland
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name Filter trips by period start and country
+GET {{HOST}}/trips?country=pOland&from=2024-12-01&to=2024-12-03
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trips filtered", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}

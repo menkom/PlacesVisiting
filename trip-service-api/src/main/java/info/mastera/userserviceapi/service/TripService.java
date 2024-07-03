@@ -4,6 +4,7 @@ import info.mastera.security.dto.AccountDto;
 import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.dto.TripCreateRequest;
 import info.mastera.userserviceapi.dto.TripResponse;
+import info.mastera.userserviceapi.dto.TripSearchRequest;
 import info.mastera.userserviceapi.exception.UnauthorizedException;
 import info.mastera.userserviceapi.mapper.PlaceMapper;
 import info.mastera.userserviceapi.mapper.TripMapper;
@@ -13,7 +14,10 @@ import info.mastera.userserviceapi.producer.EmailCalendarEventProducer;
 import info.mastera.userserviceapi.producer.NotificationProducer;
 import info.mastera.userserviceapi.repository.PlaceRepository;
 import info.mastera.userserviceapi.repository.TripRepository;
+import info.mastera.userserviceapi.specification.TripSpecification;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -90,5 +94,9 @@ public class TripService {
         } else {
             throw new UnauthorizedException("You are not authorized to delete this trip.");
         }
+    }
+
+    public Page<Trip> findAll(TripSearchRequest filter, Pageable pageable) {
+        return tripRepository.findAll(TripSpecification.filter(filter), pageable);
     }
 }

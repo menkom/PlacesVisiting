@@ -13,8 +13,6 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class AuthUtils {
 
-
-
     public static AccountDto getAccount() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         if (Objects.isNull(securityContext)) {
