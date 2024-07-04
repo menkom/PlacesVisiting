@@ -1,9 +1,9 @@
-package info.mastera.security.client;
+package info.mastera.userinfo.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import info.mastera.security.dto.AccountStatusRequest;
-import info.mastera.security.dto.AccountStatusResponse;
+import info.mastera.userinfo.dto.AccountStatusRequest;
+import info.mastera.userinfo.dto.AccountStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

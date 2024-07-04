@@ -1,4 +1,4 @@
-package info.mastera.security.dto;
+package info.mastera.userinfo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

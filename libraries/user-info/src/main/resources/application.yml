@@ -1,0 +1,3 @@
+auth-internal-client:
+  url: ${AUTH_INTERNAL_URL}
+  token: ${AUTH_INTERNAL_TOKEN}

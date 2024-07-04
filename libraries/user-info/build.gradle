@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'maven-publish' //plugin is applied to handle publishing artifacts
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'info.mastera'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    lombokVersion = '1.18.32'
+    fasterxmlVersion = '2.17.1'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:$fasterxmlVersion"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Ensure the bootJar task does not override the jar task
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+//Configures the maven-publish plugin to use the jar task output for publishing.
+publishing {
+    publications {
+        //noinspection GroovyAssignabilityCheck
+        maven(MavenPublication) {
+            //noinspection GroovyAssignabilityCheck
+            from components.java // Specify the Java component to publish
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
