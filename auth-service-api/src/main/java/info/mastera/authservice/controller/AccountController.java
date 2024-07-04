@@ -63,6 +63,6 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Header token wrong or missing.");
         }
-        return ResponseEntity.ok(accountService.getAccountStatus(request.username()));
+        return ResponseEntity.ok(accountService.getAccountStatus(request));
     }
 }

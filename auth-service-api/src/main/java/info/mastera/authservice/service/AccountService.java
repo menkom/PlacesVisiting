@@ -1,5 +1,6 @@
 package info.mastera.authservice.service;
 
+import info.mastera.authservice.dto.AccountStatusRequest;
 import info.mastera.authservice.dto.AccountStatusResponse;
 import info.mastera.authservice.mapper.AccountMapper;
 import info.mastera.authservice.model.Account;
@@ -55,9 +56,17 @@ public class AccountService {
         return true;
     }
 
-    public AccountStatusResponse getAccountStatus(String username) {
-        return accountRepository.findByUsername(username)
-                .map(accountMapper::convert)
-                .orElse(new AccountStatusResponse());
+    public AccountStatusResponse getAccountStatus(AccountStatusRequest request) {
+        if (request.userId() != null) {
+            return accountRepository.findById(request.userId())
+                    .map(accountMapper::convert)
+                    .orElse(new AccountStatusResponse());
+
+        } else if (request.username() != null) {
+            return accountRepository.findByUsername(request.username())
+                    .map(accountMapper::convert)
+                    .orElse(new AccountStatusResponse());
+        }
+        return new AccountStatusResponse();
     }
 }
