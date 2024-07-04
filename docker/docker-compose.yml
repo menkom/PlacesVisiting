@@ -106,6 +106,8 @@ services:
       - RABBITMQ_PASS=${RABBITMQ_PASS}
       - GMAIL_USER_NAME=${GMAIL_USER_NAME}
       - GMAIL_TOKEN=${GMAIL_TOKEN}
+      - AUTH_INTERNAL_URL=${AUTH_INTERNAL_URL}
+      - AUTH_INTERNAL_TOKEN=${AUTH_INTERNAL_TOKEN}
     depends_on:
       rabbitmq:
         condition: service_healthy

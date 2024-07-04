@@ -18,3 +18,8 @@ logging:
 queue:
   inbound:
     email-calendar-event: email-calendar-event-queue
+    trip-reminder: trip-reminder-queue
+
+auth-internal-client:
+  url: ${AUTH_INTERNAL_URL}
+  token: ${AUTH_INTERNAL_TOKEN}

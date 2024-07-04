@@ -20,9 +20,10 @@ repositories {
 
 ext {
     fasterxmlJacksonVersion = '2.17.1'
-    rabbitmqVersion = '0.0.2-SNAPSHOT'
+    rabbitmqVersion = '0.0.3-SNAPSHOT'
     emailVersion = '0.0.1-SNAPSHOT'
     googleCalendarEventVersion = '0.0.1-SNAPSHOT'
+    userInfoVersion = '0.0.1-SNAPSHOT'
     logbackEncoderVersion = '7.4'
 }
 
@@ -31,6 +32,7 @@ dependencies {
     implementation "info.mastera:rabbitmq:$rabbitmqVersion"
     implementation "info.mastera:email:$emailVersion"
     implementation "info.mastera:google-calendar-event:$googleCalendarEventVersion"
+    implementation "info.mastera:user-info:$userInfoVersion"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:$fasterxmlJacksonVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$fasterxmlJacksonVersion"
