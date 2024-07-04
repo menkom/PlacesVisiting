@@ -16,14 +16,16 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 ext {
     lombokVersion = '1.18.32'
     jjwtVersion = '0.12.6'
-    jakartaServletApiVersion = ''
+    jakartaServletApiVersion = '6.1.0'
     fasterxmlVersion = '2.17.1'
     mapstructVersion = '1.5.5.Final'
+    userInfoVersion = '0.0.1-SNAPSHOT'
 }
 
 dependencies {
@@ -41,6 +43,8 @@ dependencies {
 
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
+    implementation "info.mastera:user-info:$userInfoVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

@@ -1,7 +1,7 @@
 package info.mastera.security.mapper;
 
 import info.mastera.security.dto.AccountDto;
-import info.mastera.security.dto.AccountStatusResponse;
+import info.mastera.userinfo.dto.AccountStatusResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

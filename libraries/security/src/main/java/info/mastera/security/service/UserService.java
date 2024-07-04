@@ -1,8 +1,8 @@
 package info.mastera.security.service;
 
-import info.mastera.security.client.InternalAuthClient;
-import info.mastera.security.dto.AccountStatusRequest;
 import info.mastera.security.mapper.AccountStatusMapper;
+import info.mastera.userinfo.client.InternalAuthClient;
+import info.mastera.userinfo.dto.AccountStatusRequest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

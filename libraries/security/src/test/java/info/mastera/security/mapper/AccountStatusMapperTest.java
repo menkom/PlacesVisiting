@@ -1,6 +1,6 @@
 package info.mastera.security.mapper;
 
-import info.mastera.security.dto.AccountStatusResponse;
+import info.mastera.userinfo.dto.AccountStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
