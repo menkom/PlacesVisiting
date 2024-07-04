@@ -17,7 +17,7 @@ ext {
     logbackEncoderVersion = '7.4'
     assertjVersion = '3.25.3'
     mapstructVersion = '1.5.5.Final'
-    rabbitmqVersion = '0.0.2-SNAPSHOT'
+    rabbitmqVersion = '0.0.3-SNAPSHOT'
     securityVersion = '0.0.1-SNAPSHOT'
 }
 

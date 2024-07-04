@@ -51,3 +51,4 @@ queue:
   outbound:
     notification: notification-queue
     email-calendar-event: email-calendar-event-queue
+    trip-reminder: trip-reminder-queue

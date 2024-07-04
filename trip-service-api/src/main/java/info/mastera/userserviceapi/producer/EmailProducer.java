@@ -1,6 +1,7 @@
 package info.mastera.userserviceapi.producer;
 
 import info.mastera.rabbitmq.dto.CalendarEvent;
+import info.mastera.rabbitmq.dto.TripReminder;
 import info.mastera.security.dto.AccountDto;
 import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.mapper.TripMapper;
@@ -14,18 +15,20 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class EmailCalendarEventProducer {
+public class EmailProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailCalendarEventProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
     @Value("${queue.outbound.email-calendar-event}")
     private String emailCalendarEventQueue;
+    @Value("${queue.outbound.trip-reminder}")
+    private String tripReminderQueue;
 
     private final RabbitTemplate template;
     private final TripMapper tripMapper;
 
-    public EmailCalendarEventProducer(RabbitTemplate template,
-                                      TripMapper tripMapper) {
+    public EmailProducer(RabbitTemplate template,
+                         TripMapper tripMapper) {
         this.template = template;
         this.tripMapper = tripMapper;
     }
@@ -40,14 +43,25 @@ public class EmailCalendarEventProducer {
                             trip.getDate(),
                             tripMapper.toLocation(trip),
                             trip.getCompanions());
-            sendMessage(calendarEvent);
+            sendMessage(emailCalendarEventQueue, calendarEvent);
         } else {
             logger.error("No account id found on saving {}", trip);
         }
     }
 
-    private void sendMessage(CalendarEvent calendarEvent) {
-        logger.info("Sending message {} to {}", calendarEvent, emailCalendarEventQueue);
-        template.convertAndSend(emailCalendarEventQueue, calendarEvent);
+    public void sendTripReminder(Trip trip) {
+        logger.info("Sending trip reminder for trip {}", trip);
+        TripReminder tripReminder =
+                new TripReminder(trip.getOwnerId(),
+                        tripMapper.toTitle(trip),
+                        trip.getDate(),
+                        tripMapper.toLocation(trip),
+                        trip.getCompanions());
+        sendMessage(tripReminderQueue, tripReminder);
+    }
+
+    private void sendMessage(String queueName, Object event) {
+        logger.info("Sending message {} to {}", event, queueName);
+        template.convertAndSend(queueName, event);
     }
 }

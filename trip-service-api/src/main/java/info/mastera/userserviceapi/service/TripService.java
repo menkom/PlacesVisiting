@@ -10,7 +10,7 @@ import info.mastera.userserviceapi.mapper.PlaceMapper;
 import info.mastera.userserviceapi.mapper.TripMapper;
 import info.mastera.userserviceapi.model.Place;
 import info.mastera.userserviceapi.model.Trip;
-import info.mastera.userserviceapi.producer.EmailCalendarEventProducer;
+import info.mastera.userserviceapi.producer.EmailProducer;
 import info.mastera.userserviceapi.producer.NotificationProducer;
 import info.mastera.userserviceapi.repository.PlaceRepository;
 import info.mastera.userserviceapi.repository.TripRepository;
@@ -32,14 +32,14 @@ public class TripService {
     private final PlaceRepository placeRepository;
     private final PlaceMapper placeMapper;
     private final NotificationProducer notificationProducer;
-    private final EmailCalendarEventProducer emailCalendarEventProducer;
+    private final EmailProducer emailCalendarEventProducer;
 
     public TripService(TripRepository tripRepository,
                        TripMapper tripMapper,
                        PlaceRepository placeRepository,
                        PlaceMapper placeMapper,
                        NotificationProducer notificationProducer,
-                       EmailCalendarEventProducer emailCalendarEventProducer) {
+                       EmailProducer emailCalendarEventProducer) {
         this.tripRepository = tripRepository;
         this.tripMapper = tripMapper;
         this.placeRepository = placeRepository;

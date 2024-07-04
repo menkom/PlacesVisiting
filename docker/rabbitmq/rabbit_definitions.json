@@ -1,8 +1,8 @@
 {
-  "rabbit_version": "3.13.1",
-  "rabbitmq_version": "3.13.1",
+  "rabbit_version": "3.13.3",
+  "rabbitmq_version": "3.13.3",
   "product_name": "RabbitMQ",
-  "product_version": "3.13.1",
+  "product_version": "3.13.3",
   "users": [
     {
       "name": "someuser",
@@ -39,6 +39,20 @@
   "policies": [],
   "queues": [
     {
+      "name": "trip-reminder-queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "email-calendar-event-queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
       "name": "notification-queue",
       "vhost": "/",
       "durable": true,
@@ -55,9 +69,34 @@
       "auto_delete": false,
       "internal": false,
       "arguments": {}
+    },
+    {
+      "name": "exchange-email",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     }
   ],
   "bindings": [
+    {
+      "source": "exchange-email",
+      "vhost": "/",
+      "destination": "email-calendar-event-queue",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "exchange-email",
+      "vhost": "/",
+      "destination": "trip-reminder-queue",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
     {
       "source": "exchange-messages",
       "vhost": "/",
