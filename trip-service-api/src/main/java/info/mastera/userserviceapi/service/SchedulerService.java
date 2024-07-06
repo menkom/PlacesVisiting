@@ -20,7 +20,7 @@ public class SchedulerService {
         this.emailCalendarEventProducer = emailCalendarEventProducer;
     }
 
-    @Scheduled(cron = "0 9 * * *")
+    @Scheduled(cron = "0 0 9 * * *") //second, minute, hour, day of month, month, day(s) of week
     public void collectInformation() {
         tripRepository.findByDate(LocalDate.now().plusDays(1))
                 .forEach(emailCalendarEventProducer::sendTripReminder);
