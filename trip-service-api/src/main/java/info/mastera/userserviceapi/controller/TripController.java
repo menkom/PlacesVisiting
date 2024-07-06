@@ -1,9 +1,9 @@
 package info.mastera.userserviceapi.controller;
 
 import info.mastera.userserviceapi.dto.TripCreateRequest;
+import info.mastera.userserviceapi.dto.TripPublicResponse;
 import info.mastera.userserviceapi.dto.TripResponse;
 import info.mastera.userserviceapi.dto.TripSearchRequest;
-import info.mastera.userserviceapi.model.Trip;
 import info.mastera.userserviceapi.service.TripService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -33,15 +33,25 @@ public class TripController {
         return tripService.save(request);
     }
 
+    @GetMapping("/{id}")
+    public TripResponse get(@PathVariable Long id) {
+        return tripService.getOwned(id);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         tripService.delete(id);
     }
 
     @GetMapping
-    public Page<Trip> find(
+    public Page<TripResponse> find(
             @PageableDefault(size = 5, sort = "id") Pageable pageable,
             @ModelAttribute TripSearchRequest filter) {
         return tripService.findAll(filter, pageable);
+    }
+
+    @GetMapping("/public/{id}")
+    public TripPublicResponse getPublicTrip(@PathVariable String id) {
+        return tripService.getPublic(1L);
     }
 }

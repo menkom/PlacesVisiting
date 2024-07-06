@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                                         "/",
                                         "/favicon.ico",
                                         "/actuator/**",
+                                        "/trips/public/*",
                                         "/error").permitAll()
                                 .anyRequest().authenticated()
                 )

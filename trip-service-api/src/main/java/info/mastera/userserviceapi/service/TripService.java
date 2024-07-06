@@ -3,6 +3,7 @@ package info.mastera.userserviceapi.service;
 import info.mastera.security.dto.AccountDto;
 import info.mastera.security.utils.AuthUtils;
 import info.mastera.userserviceapi.dto.TripCreateRequest;
+import info.mastera.userserviceapi.dto.TripPublicResponse;
 import info.mastera.userserviceapi.dto.TripResponse;
 import info.mastera.userserviceapi.dto.TripSearchRequest;
 import info.mastera.userserviceapi.exception.UnauthorizedException;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @Service
 public class TripService {
 
+    private static final String TRIP_WITH_ID_NOT_FOUND = "Trip with id=%s not found.";
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
     private final PlaceRepository placeRepository;
@@ -80,7 +82,7 @@ public class TripService {
 
     public void delete(Long id) {
         Trip trip = tripRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Trip with id=%s not found.".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(TRIP_WITH_ID_NOT_FOUND.formatted(id)));
         Long accountId = Optional.ofNullable(AuthUtils.getAccount())
                 .map(AccountDto::getId)
                 .orElseThrow(() -> new EntityNotFoundException("User ID was not found"));
@@ -96,7 +98,28 @@ public class TripService {
         }
     }
 
-    public Page<Trip> findAll(TripSearchRequest filter, Pageable pageable) {
-        return tripRepository.findAll(TripSpecification.filter(filter), pageable);
+    public TripResponse getOwned(Long id) {
+        Long accountId = Optional.ofNullable(AuthUtils.getAccount())
+                .map(AccountDto::getId)
+                .orElse(null);
+
+        return tripMapper.fromEntity(
+                tripRepository.findByIdAndOwnerId(id, accountId)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(TRIP_WITH_ID_NOT_FOUND.formatted(id)))
+        );
+    }
+
+    public TripPublicResponse getPublic(Long id) {
+        return tripMapper.toPublicFromEntity(
+                tripRepository.findById(id)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(TRIP_WITH_ID_NOT_FOUND.formatted(id)))
+        );
+    }
+
+    public Page<TripResponse> findAll(TripSearchRequest filter, Pageable pageable) {
+        return tripRepository.findAll(TripSpecification.filter(filter), pageable)
+                .map(tripMapper::fromEntity);
     }
 }

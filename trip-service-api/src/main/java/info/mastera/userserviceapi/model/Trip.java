@@ -24,7 +24,6 @@ public class Trip {
 
     private LocalDate date;
     private Long ownerId;
-    private String publicId;
 
     @ManyToOne
     @JoinColumn(name = "place_id", foreignKey = @ForeignKey(name = "fk_place_trip"))
@@ -61,15 +60,6 @@ public class Trip {
         return this;
     }
 
-    public String getPublicId() {
-        return publicId;
-    }
-
-    public Trip setPublicId(String publicId) {
-        this.publicId = publicId;
-        return this;
-    }
-
     public Place getPlace() {
         return place;
     }
@@ -94,7 +84,6 @@ public class Trip {
                 .add("id=" + id)
                 .add("date=" + date)
                 .add("ownerId=" + ownerId)
-                .add("publicId='" + publicId + "'")
                 .add("place=" + place)
                 .add("companions=" + companions)
                 .toString();

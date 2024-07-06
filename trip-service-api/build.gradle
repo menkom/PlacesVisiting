@@ -13,6 +13,7 @@ java {
 }
 
 ext {
+    fasterxmlJacksonVersion = '2.17.2'
     jjwtVersion = '0.12.6'
     logbackEncoderVersion = '7.4'
     assertjVersion = '3.25.3'
@@ -38,6 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$fasterxmlJacksonVersion"
 
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
@@ -50,7 +52,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "org.assertj:assertj-core:$assertjVersion"
-
 
     implementation "io.jsonwebtoken:jjwt-api:$jjwtVersion"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:$jjwtVersion"

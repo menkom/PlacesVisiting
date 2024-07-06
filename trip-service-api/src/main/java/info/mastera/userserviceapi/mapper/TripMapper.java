@@ -1,6 +1,7 @@
 package info.mastera.userserviceapi.mapper;
 
 import info.mastera.userserviceapi.dto.TripCreateRequest;
+import info.mastera.userserviceapi.dto.TripPublicResponse;
 import info.mastera.userserviceapi.dto.TripResponse;
 import info.mastera.userserviceapi.model.Place;
 import info.mastera.userserviceapi.model.Trip;
@@ -15,11 +16,12 @@ public interface TripMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ownerId", ignore = true)
-    @Mapping(target = "publicId", ignore = true)
     @Mapping(target = "place.id", ignore = true)
     Trip toEntity(TripCreateRequest request);
 
     TripResponse fromEntity(Trip trip);
+
+    TripPublicResponse toPublicFromEntity(Trip trip);
 
     default String toTitle(Trip trip) {
         String place = Optional.ofNullable(trip.getPlace())

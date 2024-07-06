@@ -361,3 +361,27 @@ Authorization: Bearer {{auth-bearer-token}}
     client.assert(response.status === 200, "Response status is not 200");
   });
 %}
+
+###
+# @name Get owned trip by ID
+GET {{HOST}}/trips/1
+Content-Type: application/json
+Authorization: Bearer {{auth-bearer-token}}
+
+> {%
+  client.test("Trip found", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+
+###
+# @name Get public trip info by ID even for not logged in user
+GET {{HOST}}/trips/public/1
+Content-Type: application/json
+
+> {%
+  client.test("Trip found", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
