@@ -1,4 +1,5 @@
-@HOST=http://localhost:8082/api
+@HOST=http://localhost/api
+#@HOST=http://localhost:8082/api
 @ACCOUNT_HOST=http://127.0.0.1:8079/api
 @placeId=1
 @account="user"

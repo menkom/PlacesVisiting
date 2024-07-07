@@ -1,4 +1,5 @@
-@HOST=http://127.0.0.1:8079/api
+@HOST=http://127.0.0.1/api
+#@HOST=http://127.0.0.1:8079/api
 @account="user"
 @account2="user2"
 
