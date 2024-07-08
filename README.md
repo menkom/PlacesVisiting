@@ -161,3 +161,23 @@ iCalendar examples and libraries
 * [Managing Calendar and Invites in Java](https://thinkuldeep.com/post/java-calendar-and-invite/)
 * [iCal4j - modifying or creating new iCalendar](https://ical4j.sourceforge.net/introduction.html)
 * [[Stack Overflow] Best iCalendar library for Java?](https://stackoverflow.com/questions/33901/best-icalendar-library-for-java)
+
+Folder `scratches` contains http requests to different project services.
+
+To use services on frontend all running API can be accessed on http://localhost (no need to search for port)
+
+API description:
+* Auth Service API: http://localhost:8079/api/swagger-ui/index.html
+* Trip Service API: http://localhost:8080/api/swagger-ui/index.html
+* Image Service API: http://localhost:8082/api/swagger-ui/index.html 
+
+# Project start
+
+You can start project by running only one bash file in docker folder:
+
+```shell
+cd ./docker/ &&
+  bash ./start_from_scratch.sh
+```
+
+Probably system will need some small tunning but mostly command is enough.
