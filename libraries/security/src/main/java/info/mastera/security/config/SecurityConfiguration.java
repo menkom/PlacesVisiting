@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                                         "/favicon.ico",
                                         "/actuator/**",
                                         "/trips/public/*",
+                                        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                                         "/error").permitAll()
                                 .anyRequest().authenticated()
                 )

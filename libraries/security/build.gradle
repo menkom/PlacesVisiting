@@ -25,11 +25,13 @@ ext {
     jakartaServletApiVersion = '6.1.0'
     fasterxmlVersion = '2.17.1'
     mapstructVersion = '1.5.5.Final'
+    openApiVersion = '2.6.0'
     userInfoVersion = '0.0.1-SNAPSHOT'
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion"
     compileOnly "jakarta.servlet:jakarta.servlet-api:$jakartaServletApiVersion"
 
     implementation "io.jsonwebtoken:jjwt-api:$jjwtVersion"
