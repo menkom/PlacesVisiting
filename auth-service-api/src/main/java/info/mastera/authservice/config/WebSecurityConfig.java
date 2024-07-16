@@ -57,7 +57,7 @@ public class WebSecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(IF_REQUIRED))
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(infoEndpoint -> infoEndpoint.userService(oAuth2UserService)))
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/accout/login")
+                        .loginPage("/account/login")
                         .permitAll()
                 )
                 .logout(logout -> logout

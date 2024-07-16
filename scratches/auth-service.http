@@ -166,7 +166,7 @@ GET {{HOST}}/logout
     client.global.set("auth-bearer-token", null);
     const location = response.headers.valueOf('Location');
     client.assert(
-      location && location.endsWith("accout/login?logout"),
+      location && location.endsWith("account/login?logout"),
       "No redirect location");
   });
 %}
